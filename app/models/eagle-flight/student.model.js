@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
     const Student = sequelize.define("student", {
-        OCid: {
+        ocId: {
             type: Sequelize.INTEGER,
             allowNull: false,
         },

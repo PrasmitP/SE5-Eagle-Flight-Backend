@@ -28,6 +28,10 @@ app.get("/", (req, res) => {
 });
 
 
+require("./app/routes/eagle-flight/user.routes.js")(app);
+require("./app/routes/eagle-flight/role.routes.js")(app);
+require("./app/routes/eagle-flight/student.routes.js")(app);
+
 // Uncomment once we get back to the resume builder
 // require("./app/routes/resume-builder/auth.routes.js")(app);
 // require("./app/routes/resume-builder/user.routes.js")(app);
