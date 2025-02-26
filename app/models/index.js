@@ -50,8 +50,17 @@ db.user.belongsTo(
 )
 db.user.hasOne(
   db.student,
-  { as: "student" },
-  { foreignKey: { allowNull: true }, onDelete: "CASCADE" }
+  {
+    foreignKey: {
+      name: "userId",
+      allowNull: false,
+      onDelete: "CASCADE"
+    }
+  }
+)
+db.student.belongsTo(
+  db.user,
+  { as: "user" },
 )
 
 // Associations for Student
