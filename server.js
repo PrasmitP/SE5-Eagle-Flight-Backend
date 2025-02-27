@@ -31,6 +31,8 @@ app.get("/", (req, res) => {
 require("./app/routes/eagle-flight/user.routes.js")(app);
 require("./app/routes/eagle-flight/role.routes.js")(app);
 require("./app/routes/eagle-flight/student.routes.js")(app);
+require("./app/routes/eagle-flight/badge.route.js")(app);
+require("./app/routes/eagle-flight/redeemable.route.js")(app);
 
 // Uncomment once we get back to the resume builder
 // require("./app/routes/resume-builder/auth.routes.js")(app);
