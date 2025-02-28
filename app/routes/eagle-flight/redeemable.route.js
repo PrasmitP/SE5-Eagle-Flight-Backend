@@ -12,17 +12,21 @@ module.exports = (app) => {
     router.get("/", redeemable.findAll);
   
     // Retrieve a single redeemable with id
-    router.get("/:id", [authenticate], redeemable.findOne);
-  
+    // router.get("/:id", [authenticate], redeemable.findOne);
+    router.get("/:id", redeemable.findOne);
+
     // Update a redeemable with id
-    router.put("/:id", [authenticate], redeemable.update);
-  
+    // router.put("/:id", [authenticate], redeemable.update);
+    router.put("/:id", redeemable.update);
+
     // Delete a redeemable with id
-    router.delete("/:id", [authenticate], redeemable.delete);
-  
+    // router.delete("/:id", [authenticate], redeemable.delete);
+    router.delete("/:id", redeemable.delete);
+
     // Delete all redeemables
-    router.delete("/", [authenticate], redeemable.deleteAll);
-  
+    // router.delete("/", [authenticate], redeemable.deleteAll);
+    router.delete("/", redeemable.deleteAll);
+    
     app.use("/redeemable", router);
   };
   

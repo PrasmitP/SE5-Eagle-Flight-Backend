@@ -12,17 +12,20 @@ module.exports = (app) => {
     router.get("/", badge.findAll);
   
     // Retrieve a single badge with id
-    router.get("/:id", [authenticate], badge.findOne);
+    // router.get("/:id", [authenticate], badge.findOne);
+    router.get("/:id", badge.findOne);
   
     // Update a badge with id
-    router.put("/:id", [authenticate], badge.update);
+    // router.put("/:id", [authenticate], badge.update);
+    router.put("/:id", badge.update);
   
     // Delete a badge with id
-    router.delete("/:id", [authenticate], badge.delete);
+    // router.delete("/:id", [authenticate], badge.delete);
+    router.delete("/:id", badge.delete);
   
     // Delete all badges
-    router.delete("/", [authenticate], badge.deleteAll);
-  
+    // router.delete("/", [authenticate], badge.deleteAll);
+    router.delete("/", badge.deleteAll);
     app.use("/badge", router);
   };
   
