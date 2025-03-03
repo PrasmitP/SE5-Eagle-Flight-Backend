@@ -1,6 +1,7 @@
 const db = require("../../models");
 const Student = db.student;
 const Op = db.Sequelize.Op;
+const user = require("./user.controller.js");
 
 // Create and Save a new Student
 exports.create = (req, res) => {
@@ -34,12 +35,9 @@ exports.create = (req, res) => {
 
 };
 
-// Retrieve all People from the database.
+// Retrieve all Students from the database.
 exports.findAll = (req, res) => {
-  const id = req.query.id;
-  var condition = id ? { id: { [Op.like]: `%${id}%` } } : null;
-
-  User.findAll({ where: condition })
+  User.findAll()
     .then((data) => {
       res.send(data);
     })
@@ -50,17 +48,16 @@ exports.findAll = (req, res) => {
     });
 };
 
-// Find a single User with an id
+// Find a single Student with an ocId
 exports.findOne = (req, res) => {
-  const id = req.params.id;
-
-  User.findByPk(id)
+  const ocId = req.params.ocId;
+  Student.findOne({ where: { ocId: ocId } })
     .then((data) => {
       if (data) {
         res.send(data);
       } else {
         res.status(404).send({
-          message: `Cannot find User with id=${id}.`,
+          message: `Cannot find Student with ocId=${ocId}.`,
         });
       }
     })
@@ -71,98 +68,30 @@ exports.findOne = (req, res) => {
     });
 };
 
-// Find a single User with a First Name + " " + Last Name
-exports.findByName = (req, res) => {
-  const name = req.params.name;
-  if (!name) {
-    return res.status(400).send("Name parameter is required.");
-  }
-  const fName = name.split(" ")[0];
-  const lName = name.split(" ")[1];
-  console.log(`------------------------getting user with name: ${fName} + ${lName}`);
-  User.findOne({
-    where: {
-      fName: fName,
-      lName: lName
-    },
-  })
-    .then((data) => {
-      if (data) {
-        res.send(data);
-      } else {
-        res.send(`${name} not found`);
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Error retrieving User with name=" + name,
-      });
-    });
+exports.findStudentsByName = (req, res) => {
+  user.findStudentByName;
 };
 
-// Update a User by the id in the request
+// Update a Student by the ocId in the request
 exports.update = (req, res) => {
-  const id = req.params.id;
-
-  User.update(req.body, {
-    where: { id: id },
+  const ocId = req.params.ocId;
+  Student.update(req.body, {
+    where: { ocId: ocId },
   })
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: "User was updated successfully.",
+          message: "Student was updated successfully.",
         });
       } else {
         res.send({
-          message: `Cannot update User with id=${id}. Maybe User was not found or req.body is empty!`,
+          message: `Cannot update Student with ocId=${ocId}.`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error updating User with id=" + id,
-      });
-    });
-};
-
-// Delete a User with the specified id in the request
-exports.delete = (req, res) => {
-  const id = req.params.id;
-
-  User.destroy({
-    where: { id: id },
-  })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: "User was deleted successfully!",
-        });
-      } else {
-        res.send({
-          message: `Cannot delete User with id=${id}. Maybe User was not found!`,
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Could not delete User with id=" + id,
-      });
-    });
-};
-
-// Delete all People from the database.
-exports.deleteAll = (req, res) => {
-  User.destroy({
-    where: {},
-    truncate: false,
-  })
-    .then((nums) => {
-      res.send({ message: `${nums} People were deleted successfully!` });
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while removing all people.",
+        message: "Error updating Student with ocId=" + ocId,
       });
     });
 };

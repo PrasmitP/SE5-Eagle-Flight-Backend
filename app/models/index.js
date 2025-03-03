@@ -54,7 +54,8 @@ db.user.hasOne(
     foreignKey: {
       name: "userId",
       allowNull: false,
-      onDelete: "CASCADE"
+      onDelete: "CASCADE",
+      primaryKey: true
     }
   }
 )
