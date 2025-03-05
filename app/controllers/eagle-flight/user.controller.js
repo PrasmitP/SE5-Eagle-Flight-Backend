@@ -1,5 +1,7 @@
 const db = require("../../models");
 const User = db.user;
+const Student = db.student;
+const student = require("./student.controller.js");
 const Op = db.Sequelize.Op;
 
 // Create and Save a new User
@@ -16,24 +18,51 @@ exports.create = (req, res) => {
 
   // Create a User
   const user = {
-    id: req.body.id,
     fName: req.body.fName,
     lName: req.body.lName,
     email: req.body.email,
     roleId: req.body.roleId,
   };
-
-
-
+  let response = {};
   // Trying to save User in the database
   User.create(user)
-    .then(userInstance => res.send(userInstance))
+    .then(async userInstance => {
+      response.user = userInstance;
+
+      if (user.roleId == 1 && !req.body.ocId) {
+        res.status(400).send({
+          message: "Student needs an OC ID!",
+        });
+        return;
+      }
+      if (user.roleId == 1) {
+        user.userId = userInstance.id;
+        user.enrollmentYear = req.body.enrollmentYear || null;
+        user.ocId = req.body.ocId || null;
+        const student = {
+          userId: user.userId,
+          enrollmentYear: user.enrollmentYear,
+          ocId: user.ocId,
+          points: 0
+        }
+        Student.create(student).then(studentInstance => {
+          response.student = studentInstance;
+          res.status(201).send(response);
+        }).catch(err => {
+          res.status(500).send({
+            message: err.message || "Some error occurred while creating the Student.",
+          });
+        });
+      } else {
+        res.status(201).send(response);
+      }
+    })
     .catch(err => {
       res.status(500).send({
-        message: "Some error occurred while creating the User. Perhaps the role does not exist.",
-      });
+        message: err.message || "Some error occurred while creating the User. Perhaps the role does not exist.",
+      }
+      );
     });
-
 };
 
 // Retrieve all People from the database.
@@ -55,11 +84,21 @@ exports.findAll = (req, res) => {
 // Find a single User with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
-
+  console.log(`------------------------getting user with id: ${id}`);
+  let response = {};
   User.findByPk(id)
     .then((data) => {
       if (data) {
-        res.send(data);
+        response.user = data;
+        if (data.roleId == 1) {
+          Student.findByPk(id).then(data => {
+            response.student = data
+            res.status(200).send(response);
+          }).catch(err => res.status(500).send(err.message));
+        } else {
+          res.status(200).send(response);
+        }
+
       } else {
         res.status(404).send({
           message: `Cannot find User with id=${id}.`,
@@ -73,8 +112,8 @@ exports.findOne = (req, res) => {
     });
 };
 
-// Find a single User with a First Name + " " + Last Name
-exports.findByName = (req, res) => {
+// Find all Students with a First Name + " " + Last Name
+exports.findStudentsByName = (req, res) => {
   const name = req.params.name;
   if (!name) {
     return res.status(400).send("Name parameter is required.");
@@ -82,10 +121,11 @@ exports.findByName = (req, res) => {
   const fName = name.split(" ")[0];
   const lName = name.split(" ")[1];
   console.log(`------------------------getting user with name: ${fName} + ${lName}`);
-  User.findOne({
+  User.findAll({
     where: {
       fName: fName,
-      lName: lName
+      lName: lName,
+      roleId: 1 // role id for students!!
     },
   })
     .then((data) => {
@@ -105,6 +145,8 @@ exports.findByName = (req, res) => {
 // Update a User by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
+  let roleId;
+  req.body.roleId ? roleId = req.body.roleId : roleId = null;
 
   User.update(req.body, {
     where: { id: id },
