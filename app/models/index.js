@@ -116,7 +116,7 @@ db.semester.belongsTo(
   { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
 )
 
-db.semester.hasMany(
+db.semester.belongsToMany(
   db.task,
   {
     as: "task",

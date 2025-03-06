@@ -9,5 +9,5 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
         },
     });
-    return Major;
+    return TaskSemester;
 };
