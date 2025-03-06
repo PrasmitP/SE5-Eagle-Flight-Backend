@@ -24,13 +24,14 @@ app.use(express.urlencoded({ extended: true }));
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to bezkoder application." });
+  res.json({ message: "Welcome to Eagle-Flight Backend." });
 });
 
 
 require("./app/routes/eagle-flight/user.routes.js")(app);
 require("./app/routes/eagle-flight/role.routes.js")(app);
 require("./app/routes/eagle-flight/student.routes.js")(app);
+require("./app/routes/eagle-flight/auth.routes.js")(app);
 
 // Uncomment once we get back to the resume builder
 // require("./app/routes/resume-builder/auth.routes.js")(app);

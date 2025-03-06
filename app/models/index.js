@@ -23,6 +23,7 @@ db.strength = require("./eagle-flight/strength.model.js")(sequelize, Sequelize);
 
 db.plan = require("./eagle-flight/plan.model.js")(sequelize, Sequelize);
 db.task = require("./eagle-flight/task.model.js")(sequelize, Sequelize);
+db.session = require("./eagle-flight/session.model.js")(sequelize, Sequelize);
 
 
 // db.user = require("./resume-builder/user.model.js")(sequelize, Sequelize);
