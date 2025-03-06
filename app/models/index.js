@@ -26,6 +26,7 @@ db.generalSemester = require("./eagle-flight/generalSemester.model.js")(sequeliz
 db.semester = require("./eagle-flight/semester.model.js")(sequelize, Sequelize);
 db.taskSemester = require("./eagle-flight/taskSemester.model.js")(sequelize, Sequelize);
 db.task = require("./eagle-flight/task.model.js")(sequelize, Sequelize);
+db.session = require("./eagle-flight/session.model.js")(sequelize, Sequelize);
 
 
 // db.user = require("./resume-builder/user.model.js")(sequelize, Sequelize);
