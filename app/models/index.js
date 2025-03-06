@@ -82,41 +82,4 @@ db.student.belongsTo(
 )
 db.strength.hasMany(
   db.student,
-  { as: "student" },
-  { foreignKey: { allowNull: false }, onDelete: "SET NULL" }
-)
-db.student.belongsTo(
-  db.strength,
-  { as: "strength" },
-  { foreignKey: { allowNull: false }, onDelete: "SET NULL" }
-)
-db.badge.belongsToMany(
-  db.student,
-  { 
-    through: "studentBadges",
-    foreignKey: 'badgeId',
-    otherKey: 'studentId',
-    onDelete: "CASCADE"
-  }
-)
-db.redeemable.belongsToMany(
-  db.student,
-  { 
-    through: "studentRedeemables",
-    foreignKey: "redeemableId",
-    otherKey: "studentId",
-    onDelete: "CASCADE"
-  }
-)
-
-// Associations for Flight Plan
-db.plan.belongsToMany(
-  db.task,
-  { through: "plan_tasks" }
-)
-db.task.belongsToMany(
-  db.plan,
-  { through: "plan_tasks" }
-)
-
-module.exports = db;
+  { as
