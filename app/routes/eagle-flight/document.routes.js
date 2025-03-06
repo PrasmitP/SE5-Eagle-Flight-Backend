@@ -1,8 +1,15 @@
 module.exports = (app) => {
+    console.log("Registering document routes...");
     const document = require("../../controllers/eagle-flight/document.controller.js");
     const { authenticate } = require("../../authorization/authorization.js");
     var router = require("express").Router();
   
+    // Add debug middleware
+    router.use((req, res, next) => {
+        console.log(`Document route hit: ${req.method} ${req.url}`);
+        next();
+    });
+
     // Create a new Document
     router.post("/", [authenticate], document.create);
   
@@ -21,5 +28,5 @@ module.exports = (app) => {
     // Delete all Documents
     router.delete("/", [authenticate], document.deleteAll);
   
-    app.use("/document", router);
-  };
+    app.use("/document", router); 
+};

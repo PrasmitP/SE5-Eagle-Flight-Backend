@@ -4,12 +4,15 @@ const Op = db.Sequelize.Op;
 
 // Create and Save a new Document
 exports.create = (req, res) => {
+  // Validate request
   if (!req.body.title || !req.body.filePath || !req.body.uploadedBy) {
-    return res.status(400).send({
-      message: "Document must have a title, filePath, and uploadedBy field!",
+    res.status(400).send({
+      message: "Content cannot be empty! Required fields: title, filePath, uploadedBy"
     });
+    return;
   }
 
+  // Create a Document
   const document = {
     title: req.body.title,
     description: req.body.description || "",
@@ -17,11 +20,15 @@ exports.create = (req, res) => {
     uploadedBy: req.body.uploadedBy,
   };
 
+  // Save Document in the database
   Document.create(document)
-    .then((data) => res.send(data))
-    .catch((err) => {
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      console.error("Error creating document:", err);
       res.status(500).send({
-        message: "Some error occurred while creating the Document.",
+        message: err.message || "Some error occurred while creating the Document."
       });
     });
 };

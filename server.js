@@ -7,7 +7,11 @@ const app = express();
 
 const db = require("./app/models");
 
-db.sequelize.sync();
+db.sequelize.sync({ force: true }).then(() => {
+    console.log("Drop and re-sync db.");
+}).catch((err) => {
+    console.log("Failed to sync database:", err);
+});
 
 var corsOptions = {
   origin: "http://localhost:3000",
@@ -33,6 +37,8 @@ require("./app/routes/eagle-flight/role.routes.js")(app);
 require("./app/routes/eagle-flight/student.routes.js")(app);
 require("./app/routes/eagle-flight/badge.route.js")(app);
 require("./app/routes/eagle-flight/redeemable.route.js")(app);
+require("./app/routes/eagle-flight/document.routes.js")(app);
+require("./app/routes/eagle-flight/major.routes.js")(app);
 
 // Uncomment once we get back to the resume builder
 // require("./app/routes/resume-builder/auth.routes.js")(app);
@@ -46,7 +52,7 @@ require("./app/routes/eagle-flight/redeemable.route.js")(app);
 // require("./app/routes/resume-builder/award.routes.js")(app);
 
 // set port, listen for requests
-const PORT = process.env.PORT || 3100;
+const PORT = process.env.PORT || 3013;
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);

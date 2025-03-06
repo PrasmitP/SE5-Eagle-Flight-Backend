@@ -24,17 +24,14 @@ module.exports = (sequelize, Sequelize) => {
     });
   
     // Define associations
-    Document.belongsTo(sequelize.models.student, {
-      foreignKey: "uploadedBy",
-      as: "student",
-      onDelete: "CASCADE",
-    });
-  
-    sequelize.models.student.hasMany(Document, {
-      foreignKey: "uploadedBy",
-      as: "documents",
-    });
-  
+    Document.associate = (models) => {
+      Document.belongsTo(models.student, {
+        foreignKey: "uploadedBy",
+        as: "student",
+        onDelete: "CASCADE",
+      });
+    };
+ 
     return Document;
-  };
+};
   

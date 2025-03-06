@@ -26,10 +26,12 @@ db.plan = require("./eagle-flight/plan.model.js")(sequelize, Sequelize);
 db.task = require("./eagle-flight/task.model.js")(sequelize, Sequelize);
 
 db.badge = require('./eagle-flight/badge.model.js')(sequelize, Sequelize);
+db.document = require('./eagle-flight/document.model.js')(sequelize, Sequelize);
 //db.studentBadge = require('./eagle-flight/studentBadge.model.js')(sequelize, Sequelize);
 
 db.redeemable = require('./eagle-flight/redeemable.model.js')(sequelize, Sequelize);
 //db.studentRedeemable = require('./eagle-flight/studentRedeemable.model.js')(sequelize, Sequelize);
+db.major = require('./eagle-flight/major.model.js')(sequelize, Sequelize);
 
 // db.user = require("./resume-builder/user.model.js")(sequelize, Sequelize);
 // db.session = require("./resume-builder/session.model.js")(sequelize, Sequelize);
@@ -82,4 +84,48 @@ db.student.belongsTo(
 )
 db.strength.hasMany(
   db.student,
-  { as
+  { as: "student" },
+  { foreignKey: { allowNull: false }, onDelete: "SET NULL" }
+)
+db.student.belongsTo(
+  db.strength,
+  { as: "strength" },
+  { foreignKey: { allowNull: false }, onDelete: "SET NULL" }
+)
+db.badge.belongsToMany(
+  db.student,
+  { 
+    through: "studentBadges",
+    foreignKey: 'badgeId',
+    otherKey: 'studentId',
+    onDelete: "CASCADE"
+  }
+)
+db.redeemable.belongsToMany(
+  db.student,
+  { 
+    through: "studentRedeemables",
+    foreignKey: "redeemableId",
+    otherKey: "studentId",
+    onDelete: "CASCADE"
+  }
+)
+
+// Associations for Flight Plan
+db.plan.belongsToMany(
+  db.task,
+  { through: "plan_tasks" }
+)
+db.task.belongsToMany(
+  db.plan,
+  { through: "plan_tasks" }
+)
+
+// Call associate if it exists for each model
+Object.keys(db).forEach(modelName => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
+
+module.exports = db;
