@@ -22,6 +22,9 @@ db.major = require("./eagle-flight/major.model.js")(sequelize, Sequelize);
 db.strength = require("./eagle-flight/strength.model.js")(sequelize, Sequelize);
 
 db.plan = require("./eagle-flight/plan.model.js")(sequelize, Sequelize);
+db.generalSemester = require("./eagle-flight/generalSemester.model.js")(sequelize, Sequelize);
+db.semester = require("./eagle-flight/semester.model.js")(sequelize, Sequelize);
+db.taskSemester = require("./eagle-flight/taskSemester.model.js")(sequelize, Sequelize);
 db.task = require("./eagle-flight/task.model.js")(sequelize, Sequelize);
 db.session = require("./eagle-flight/session.model.js")(sequelize, Sequelize);
 
@@ -55,7 +58,8 @@ db.user.hasOne(
     foreignKey: {
       name: "userId",
       allowNull: false,
-      onDelete: "CASCADE"
+      onDelete: "CASCADE",
+      primaryKey: true
     }
   }
 )
@@ -87,13 +91,47 @@ db.student.belongsTo(
 )
 
 // Associations for Flight Plan
-db.plan.belongsToMany(
+// sequelize.sync({ alter: true }) // Safely updates tables without deleting data NOT SURE ABOUT THIS ONE
+
+db.plan.hasMany(
+  db.semester,
+  { as: "semester" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+)
+db.semester.belongsTo(
+  db.plan,
+  { as: "plan" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+)
+
+
+db.generalSemester.hasMany(
+  db.semester,
+  { as: "semester" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+)
+db.semester.belongsTo(
+  db.generalSemester,
+  { as: "generalSemester" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+)
+
+db.semester.belongsToMany(
   db.task,
-  { through: "plan_tasks" }
+  {
+    as: "task",
+    through: db.taskSemester,
+    foreignKey: { allowNull: false }, onDelete: "CASCADE"
+  }
 )
 db.task.belongsToMany(
-  db.plan,
-  { through: "plan_tasks" }
+  db.semester,
+  {
+    as: "semester",
+    through: db.taskSemester,
+    foreignKey: { allowNull: false }, onDelete: "CASCADE"
+  }
 )
+
 
 module.exports = db;

@@ -1,23 +1,26 @@
 module.exports = (sequelize, Sequelize) => {
-    const Student = sequelize.define("student", {
-        userId: {
+    const Semester = sequelize.define("semester", {
+        id: {
+            type: Sequelize.INTEGER,
+            autoIncrement: true,
             primaryKey: true,
+        },
+        startDate: {
+            type: Sequelize.DATE,
+            allowNull: false,
+        },
+        endDate: {
+            type: Sequelize.DATE,
+            allowNull: false,
+        },
+        season: {
             type: Sequelize.INTEGER,
             allowNull: false,
         },
-        ocId: {
+        year: {
             type: Sequelize.INTEGER,
             allowNull: false,
-            unique: true
-        },
-        enrollmentYear: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
-        },
-        points: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
-        },
+        }
     });
-    return Student;
+    return Semester;
 };
