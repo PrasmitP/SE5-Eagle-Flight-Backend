@@ -35,14 +35,23 @@ exports.create = (req, res) => {
         });
         return;
       }
+
+      //roleId 1 is student
       if (user.roleId == 1) {
         user.userId = userInstance.id;
         user.enrollmentYear = req.body.enrollmentYear || null;
+        user.enrollmentSemester = req.body.enrollmentSemester || null;
+        user.graduationYear = req.body.graduationYear || null;
+        user.graduationSemester = req.body.graduationSemester || null;
         user.ocId = req.body.ocId || null;
         const student = {
           userId: user.userId,
           enrollmentYear: user.enrollmentYear,
+          enrollmentSemester: user.enrollmentSemester,
+          graduationYear: user.graduationYear,
+          graduationSemester: user.graduationSemester,
           ocId: user.ocId,
+
           points: 0
         }
         Student.create(student).then(studentInstance => {
