@@ -17,6 +17,10 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false,
         },
+        isExperience: {
+            type: Sequelize.BOOLEAN,
+            allowNull: false,
+        },
     });
     return Task;
 };

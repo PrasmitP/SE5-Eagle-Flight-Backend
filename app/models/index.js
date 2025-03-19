@@ -112,7 +112,6 @@ db.generalSemester.hasMany(
 )
 db.semester.belongsTo(
   db.generalSemester,
-  { as: "generalSemester" },
   { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
 )
 

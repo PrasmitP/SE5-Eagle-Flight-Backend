@@ -15,7 +15,8 @@ exports.create = (req, res) => {
     const task = {
         name: req.body.name,
         description: req.body.description,
-        points: req.body.points
+        points: req.body.points,
+        isExperience: req.body.isExperience ? req.body.isExperience : false,
     };
 
     console.log("Creating task " + task.name);
