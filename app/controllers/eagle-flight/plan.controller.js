@@ -5,20 +5,18 @@ const Op = db.Sequelize.Op;
 // Create and Save a new Plan
 exports.create = (req, res) => {
     // Validate request
-    if (!req.body.name || !req.body.description) {
+    if (!req.majorId) {
         res.status(400).send({
-            message: "Plan needs a name and description!",
+            message: "Plan needs a majorId!",
         });
         return;
     }
     // Create a Plan
     const plan = {
-        name: req.body.name,
-        description: req.body.description,
-        points: req.body.points
+        majorId: req.majorId,
     };
 
-    console.log("Creating plan " + plan.name);
+    console.log("Creating plan ");
     // Trying to save Plan in the database
     Plan.create(plan).then((data) => {
         res.send(data);
