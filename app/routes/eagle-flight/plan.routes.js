@@ -9,8 +9,14 @@ module.exports = (app) => {
     // Retrieve all Plans
     router.get("/", plan.findAll);
 
-    // Retrieve a single Plan with id
+    // Retrieve a single Plan with id including tasks and taskInSemester (semesterUntilGraduation)
     router.get("/:id", plan.findOne);
+
+    // Add a task to a Plan with semesterUntilGraduation
+    router.post("/:id/addTask", plan.addTask);
+
+    // Update the semesterUntilGraduation given the plan Id and task Id
+    router.put("/:id/task/:taskId", plan.updateSemester);
 
     // Update a Plan with id
     router.put("/:id", plan.update);
