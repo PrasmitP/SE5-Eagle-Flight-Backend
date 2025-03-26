@@ -1,22 +1,26 @@
 module.exports = (sequelize, Sequelize) => {
-    const Task = sequelize.define("task", {
+    const GeneralSemester = sequelize.define("gerneralsemester", {
         id: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
-        name: {
+        startDate: {
+            type: Sequelize.DATEONLY,
+            allowNull: false,
+        },
+        endDate: {
+            type: Sequelize.DATEONLY,
+            allowNull: false,
+        },
+        season: {
             type: Sequelize.STRING,
             allowNull: false,
         },
-        points: {
+        year: {
             type: Sequelize.INTEGER,
             allowNull: false,
         },
-        description: {
-            type: Sequelize.STRING,
-            allowNull: false,
-        },
     });
-    return Task;
+    return GeneralSemester;
 };

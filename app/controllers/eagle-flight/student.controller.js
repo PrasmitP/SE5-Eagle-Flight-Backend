@@ -19,6 +19,9 @@ exports.create = (req, res) => {
   const student = {
     userId: req.body.userId,
     enrollmentYear: req.body.enrollmentYear,
+    enrollmentSemester: req.body.enrollmentSemester,
+    graduationYear: req.body.graduationYear,
+    graduationSemester: req.body.graduationSemester,
     ocId: req.body.ocId,
     points: 0
   };
@@ -37,7 +40,7 @@ exports.create = (req, res) => {
 
 // Retrieve all Students from the database.
 exports.findAll = (req, res) => {
-  User.findAll()
+  Student.findAll()
     .then((data) => {
       res.send(data);
     })
