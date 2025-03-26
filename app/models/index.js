@@ -1,3 +1,4 @@
+const { DataTypes } = require("sequelize");
 const dbConfig = require("../config/db.config.js");
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
@@ -28,6 +29,11 @@ db.taskSemester = require("./eagle-flight/taskSemester.model.js")(sequelize, Seq
 db.task = require("./eagle-flight/task.model.js")(sequelize, Sequelize);
 db.session = require("./eagle-flight/session.model.js")(sequelize, Sequelize);
 
+db.badge = require('./eagle-flight/badge.model.js')(sequelize, Sequelize);
+//db.studentBadge = require('./eagle-flight/studentBadge.model.js')(sequelize, Sequelize);
+
+db.redeemable = require('./eagle-flight/redeemable.model.js')(sequelize, Sequelize);
+//db.studentRedeemable = require('./eagle-flight/studentRedeemable.model.js')(sequelize, Sequelize);
 
 // db.user = require("./resume-builder/user.model.js")(sequelize, Sequelize);
 // db.session = require("./resume-builder/session.model.js")(sequelize, Sequelize);
@@ -88,6 +94,24 @@ db.student.belongsTo(
   db.strength,
   { as: "strength" },
   { foreignKey: { allowNull: false }, onDelete: "SET NULL" }
+)
+db.badge.belongsToMany(
+  db.student,
+  { 
+    through: "studentBadges",
+    foreignKey: 'badgeId',
+    otherKey: 'studentId',
+    onDelete: "CASCADE"
+  }
+)
+db.redeemable.belongsToMany(
+  db.student,
+  { 
+    through: "studentRedeemables",
+    foreignKey: "redeemableId",
+    otherKey: "studentId",
+    onDelete: "CASCADE"
+  }
 )
 
 // Associations for Flight Plan
