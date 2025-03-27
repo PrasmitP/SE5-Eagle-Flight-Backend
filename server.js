@@ -35,6 +35,7 @@ require("./app/routes/eagle-flight/task.routes.js")(app);
 require("./app/routes/eagle-flight/auth.routes.js")(app);
 require("./app/routes/eagle-flight/badge.route.js")(app);
 require("./app/routes/eagle-flight/redeemable.route.js")(app);
+require("./app/routes/eagle-flight/event.routes.js")(app);
 
 // Uncomment once we get back to the resume builder
 // require("./app/routes/resume-builder/auth.routes.js")(app);

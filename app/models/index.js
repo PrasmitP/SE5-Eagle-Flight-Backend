@@ -35,6 +35,8 @@ db.badge = require('./eagle-flight/badge.model.js')(sequelize, Sequelize);
 db.redeemable = require('./eagle-flight/redeemable.model.js')(sequelize, Sequelize);
 //db.studentRedeemable = require('./eagle-flight/studentRedeemable.model.js')(sequelize, Sequelize);
 
+db.event = require("./eagle-flight/event.model.js")(sequelize, Sequelize);
+
 // db.user = require("./resume-builder/user.model.js")(sequelize, Sequelize);
 // db.session = require("./resume-builder/session.model.js")(sequelize, Sequelize);
 // db.resume = require("./resume-builder/resume.model.js")(sequelize, Sequelize);
@@ -114,6 +116,23 @@ db.redeemable.belongsToMany(
   }
 )
 
+// Associations for Events
+db.event.belongsToMany(
+  db.student,
+  {
+    as: "student",
+    through: "studentEvent",
+    foreignKey: { allowNull: false }, onDelete: "CASCADE"
+  }
+)
+db.student.belongsToMany(
+  db.event, {
+    as: "event",
+    through: "studentEvent",
+    foreignKey: { allowNull: false }, onDelete: "CASCADE"
+  }
+)
+
 // Associations for Flight Plan
 // sequelize.sync({ alter: true }) // Safely updates tables without deleting data NOT SURE ABOUT THIS ONE
 
@@ -127,7 +146,6 @@ db.semester.belongsTo(
   { as: "plan" },
   { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
 )
-
 
 db.generalSemester.hasMany(
   db.semester,
@@ -156,6 +174,5 @@ db.task.belongsToMany(
     foreignKey: { allowNull: false }, onDelete: "CASCADE"
   }
 )
-
 
 module.exports = db;
