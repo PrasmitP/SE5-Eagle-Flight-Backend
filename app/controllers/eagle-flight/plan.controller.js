@@ -64,6 +64,27 @@ exports.findOne = (req, res) => {
         });
 };
 
+exports.findForMajorId = (req, res) => {
+    console.log("Finding plan with maJorId: " + req.params.majorId);
+    const majorId = req.params.majorId;
+    Plan.findOne({ where: { majorId: majorId }, include: ["tasks"] })
+        .then((data) => {
+            if (data) {
+                res.send(data);
+            } else {
+                res.status(404).send({
+                    message: `Cannot find Plan with majorId=${majorId}.`,
+                });
+            }
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: err.message || "Error retrieving Plan with majorId=" + majorId,
+            });
+        });
+
+}
+
 exports.addTask = (req, res) => {
     const id = req.params.id;
     console.log("Adding task to plan with id: " + id);
@@ -96,6 +117,42 @@ exports.addTask = (req, res) => {
 
 };
 
+exports.deleteTask = (req, res) => {
+    const id = req.params.id;
+    console.log("Removing task from plan with id: " + id);
+    if (req.params.taskId == null) {
+        res.status(400).send({
+            message: "TaskId is required!"
+        });
+        return;
+    }
+
+    Plan.findByPk(id)
+        .then((plan) => {
+            if (!plan) {
+                res.status(404).send({
+                    message: `Cannot find Plan with id=${id}.`,
+                });
+                return;
+            }
+
+            const taskId = req.params.taskId;
+            TaskInSemester.destroy({ where: { planId: id, taskId: taskId } })
+                .then((rowsDeleted) => {
+                    if (rowsDeleted === 0) {
+                        res.status(404).json({ message: "Task not found in plan." })
+                    } else {
+                        res.status(200).json({ message: "Task removed from plan." })
+                    }
+                })
+                .catch((err) => {
+                    res.status(500).json({ message: err.message })
+                })
+
+        })
+
+};
+
 exports.updateSemester = (req, res) => {
     const id = req.params.id;
     const taskId = req.params.taskId;
@@ -111,7 +168,7 @@ exports.updateSemester = (req, res) => {
         (taskInSemesterInstance) => taskInSemesterInstance.update({ semesterUntilGraduation: newSemester }).then(
             (response) => res.send(response)
         ).catch(
-            (err)=>res.status(500).send(
+            (err) => res.status(500).send(
                 {
                     message: err.message
                 }
