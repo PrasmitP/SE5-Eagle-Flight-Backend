@@ -26,6 +26,9 @@ db.plan = require("./eagle-flight/plan.model.js")(sequelize, Sequelize);
 db.taskInSemester = require("./eagle-flight/TaskInSemester.model.js")(sequelize, Sequelize);
 db.task = require("./eagle-flight/task.model.js")(sequelize, Sequelize);
 
+db.planInstance = require("./eagle-flight/planInstance.model.js")(sequelize, Sequelize);
+db.instanceTask = require("./eagle-flight/instanceTask.model.js")(sequelize, Sequelize);
+db.generalSemester = require("./eagle-flight/generalSemester.model.js")(sequelize, Sequelize);
 
 // db.user = require("./resume-builder/user.model.js")(sequelize, Sequelize);
 // db.session = require("./resume-builder/session.model.js")(sequelize, Sequelize);
@@ -94,6 +97,20 @@ db.student.belongsTo(
 db.major.hasOne(db.plan);
 db.plan.belongsToMany(db.task, { through: db.taskInSemester });
 db.task.belongsToMany(db.plan, { through: db.taskInSemester });
+
+
+// Assosiations for Flight Plan Instance
+db.student.hasOne(db.planInstance);
+db.planInstance.belongsTo(db.student);
+
+db.planInstance.hasMany(db.instanceTask);
+db.planInstance.belongsTo(db.plan);
+
+db.generalSemester.hasMany(db.instanceTask);
+db.instanceTask.belongsTo(db.generalSemester);
+
+db.task.hasMany(db.instanceTask);
+db.instanceTask.belongsTo(db.task);
 
 
 module.exports = db;
