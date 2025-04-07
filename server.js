@@ -6,8 +6,44 @@ const cors = require("cors");
 const app = express();
 
 const db = require("./app/models");
+const Role = db.role;
+const Major = db.major;
 
-db.sequelize.sync();
+const seedRoles = async () => {
+  const defaultRoles = [
+    { id: 1, name: "student" },
+    { id: 2, name: "admin" },
+  ];
+
+  for (const role of defaultRoles) {
+    await Role.findOrCreate({
+      where: { id: role.id },
+      defaults: role,
+    });
+  }
+};
+
+const seedMajors = async () => {
+  const defaultMajors = [
+    { id: 1, name: "Computer Science" },
+    { id: 2, name: "Bible" },
+    { id: 3, name: "Math" },
+    { id: 4, name: "Electrical Engineering" }
+  ];
+
+  for (const major of defaultMajors) {
+    await Major.findOrCreate({
+      where: { id: major.id },
+      defaults: major,
+    });
+  }
+}
+
+
+db.sequelize.sync().then(() => {
+  seedRoles()
+  seedMajors()
+});
 
 var corsOptions = {
   origin: "http://localhost:3000",
