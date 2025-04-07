@@ -54,8 +54,6 @@ exports.login = async (req, res) => {
     lastName = data.family_name;
   }
 
-  console.log(lastName);
-
   let user = {};
   let session = {};
 
@@ -76,6 +74,7 @@ exports.login = async (req, res) => {
           fName: firstName,
           lName: lastName,
           email: email,
+          roleId: 1 // default to student
         };
         console.log(user)
       }
