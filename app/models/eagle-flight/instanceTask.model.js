@@ -1,13 +1,15 @@
 module.exports = (sequelize, Sequelize) => {
-    const TaskSemester = sequelize.define("taskSemester", {
-        isCompleted: {
-            type: Sequelize.BOOLEAN,
+    const InstanceTask = sequelize.define("instanceTask", {
+        completionDate: {
+            type: Sequelize.DATE,
             allowNull: false,
         },
         isPostponed: {
             type: Sequelize.BOOLEAN,
             allowNull: false,
         },
-    });
-    return TaskSemester;
+    },
+        { timestamps: false }
+    );
+    return InstanceTask;
 };
