@@ -28,6 +28,9 @@ db.taskSemester = require("./eagle-flight/taskSemester.model.js")(sequelize, Seq
 db.task = require("./eagle-flight/task.model.js")(sequelize, Sequelize);
 db.session = require("./eagle-flight/session.model.js")(sequelize, Sequelize);
 
+db.redeemable = require("./eagle-flight/redeemable.model.js")(sequelize, Sequelize);
+db.studentRedeemable = require("./eagle-flight/studentRedeemable.model.js")(sequelize, Sequelize);
+
 
 // db.user = require("./resume-builder/user.model.js")(sequelize, Sequelize);
 // db.session = require("./resume-builder/session.model.js")(sequelize, Sequelize);
@@ -132,6 +135,33 @@ db.task.belongsToMany(
     foreignKey: { allowNull: false }, onDelete: "CASCADE"
   }
 )
+
+//Assosiations for redeemable 
+
+// A Student can redeem many items
+db.student.hasMany(
+  db.studentRedeemable,
+  { as: "studentRedeemable" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+);
+db.studentRedeemable.belongsTo(
+  db.student,
+  { as: "student" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+);
+
+// A Redeemable item can be redeemed many times
+db.redeemable.hasMany(
+  db.studentRedeemable,
+  { as: "studentRedeemable" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+);
+db.studentRedeemable.belongsTo(
+  db.redeemable,
+  { as: "redeemable" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+);
+
 
 
 module.exports = db;
