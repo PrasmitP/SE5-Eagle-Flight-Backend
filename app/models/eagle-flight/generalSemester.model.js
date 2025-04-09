@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    const GeneralSemester = sequelize.define("gerneralsemester", {
+    const GeneralSemester = sequelize.define("generalsemester", {
         id: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
@@ -21,6 +21,8 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER,
             allowNull: false,
         },
-    });
+    },
+        { timestamps: false }
+    );
     return GeneralSemester;
 };

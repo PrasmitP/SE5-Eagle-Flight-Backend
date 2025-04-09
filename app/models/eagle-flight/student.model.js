@@ -14,7 +14,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER,
             allowNull: false,
         },
-        enrollmentSemester:{
+        enrollmentSemester: {
             type: Sequelize.STRING,
             allowNull: false,
         },
@@ -30,6 +30,8 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER,
             allowNull: false,
         },
-    });
+    },
+        { timestamps: false }
+    );
     return Student;
 };
