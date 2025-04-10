@@ -73,6 +73,7 @@ require("./app/routes/eagle-flight/major.routes.js")(app);
 require("./app/routes/eagle-flight/plan.routes.js")(app);
 require("./app/routes/eagle-flight/generalSemester.routes.js")(app);
 require("./app/routes/eagle-flight/planInstance.routes.js")(app);
+require("./app/routes/eagle-flight/instanceTask.routes.js")(app);
 
 
 // Uncomment once we get back to the resume builder

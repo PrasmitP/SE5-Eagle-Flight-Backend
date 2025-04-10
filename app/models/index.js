@@ -107,16 +107,25 @@ db.plan.hasMany(db.planInstance);
 db.planInstance.belongsTo(db.plan);
 
 // Many-to-Many through instanceTask
-db.planInstance.belongsToMany(db.task, { through: db.instanceTask });
-db.task.belongsToMany(db.planInstance, { through: db.instanceTask });
+// This is because we do want to have duplicate rows, with different semesterUntilGraduation. Tasks can be postponed!
+db.planInstance.hasMany(db.instanceTask, {
+  foreignKey: 'planInstanceStudentUserId'
+});
+db.instanceTask.belongsTo(db.planInstance, {
+  foreignKey: 'planInstanceStudentUserId'
+});
 
-// Required for Sequelize to properly understand instanceTask
-db.instanceTask.belongsTo(db.planInstance);
-db.instanceTask.belongsTo(db.task);
+// A Task has many InstanceTasks
+db.task.hasMany(db.instanceTask, {
+  foreignKey: 'taskId'
+});
+db.instanceTask.belongsTo(db.task, {
+  foreignKey: 'taskId'
+});
 
 // General semester associations
-db.generalSemester.hasMany(db.instanceTask);
-db.instanceTask.belongsTo(db.generalSemester);
+// db.generalSemester.hasMany(db.instanceTask);
+// db.instanceTask.belongsTo(db.generalSemester);
 
 
 module.exports = db;
