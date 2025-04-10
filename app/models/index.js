@@ -119,17 +119,19 @@ db.redeemable.belongsToMany(
 // Associations for Events
 db.event.belongsToMany(
   db.student,
-  {
-    as: "student",
-    through: "studentEvent",
-    foreignKey: { allowNull: false }, onDelete: "CASCADE"
-  }
+    {
+      as: "student",
+      through: "studentEvent",
+      foreignKey: { allowNull: false },
+      onDelete: "CASCADE"
+    }
 )
 db.student.belongsToMany(
   db.event, {
     as: "event",
     through: "studentEvent",
-    foreignKey: { allowNull: false }, onDelete: "CASCADE"
+    foreignKey: { allowNull: false },
+    onDelete: "CASCADE"
   }
 )
 

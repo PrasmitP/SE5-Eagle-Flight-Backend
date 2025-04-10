@@ -1,5 +1,5 @@
 const db = require("../../models");
-const Event = db.event;
+const event = db.event;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new event
@@ -15,17 +15,18 @@ exports.create = (req, res) => {
   }
 
   // Create a event object
-  const event = {
-    name: req.body.name,
-    description: req.body.description,
-    location: req.body.location,
+  const newEvent = {
+    id: req.body.id,
+    experienceID: req.body.experienceID,
     date: req.body.date,
     type: req.body.type,
-    experienceID: req.body.experienceID
+    location: req.body.location,
+    name: req.body.name,
+    description: req.body.description
   };
 
   // Save event in the database
-  Event.create(event)
+  event.create(newEvent)
     .then((data) => res.send(data))
     .catch((err) => {
       console.error(err);

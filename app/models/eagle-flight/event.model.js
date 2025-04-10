@@ -1,9 +1,13 @@
 module.exports = (sequelize, Sequelize) => {
-    const Task = sequelize.define("event", {
+    const Event = sequelize.define("event", {
         id: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
             primaryKey: true,
+        },
+        experienceID: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
         },
         location: {
             type: Sequelize.STRING,
@@ -11,7 +15,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         dateTime: {
             type: Sequelize.DATE,
-            allowNull: false,
+            allowNull: true,
         },
         type: {
             type: Sequelize.STRING,
@@ -24,11 +28,7 @@ module.exports = (sequelize, Sequelize) => {
         description: {
             type: Sequelize.STRING,
             allowNull: false,
-        },
-        experienceID: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
         }
     });
-    return Task;
+    return Event;
 };
