@@ -2,7 +2,7 @@ module.exports = (sequelize, Sequelize) => {
     const InstanceTask = sequelize.define("instanceTask", {
         completionDate: {
             type: Sequelize.DATE,
-            allowNull: false,
+            allowNull: true,
         },
         isPostponed: {
             type: Sequelize.BOOLEAN,

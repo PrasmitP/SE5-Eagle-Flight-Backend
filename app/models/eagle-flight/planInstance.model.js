@@ -1,10 +1,12 @@
 module.exports = (sequelize, Sequelize) => {
     const PlanInstance = sequelize.define("planInstance", {
-        id: {
+        studentUserId: {
             type: Sequelize.INTEGER,
-            autoIncrement: true,
-            primaryKey: true,
-        }
+            primaryKey: true
+        },
+        planId: {
+            type: Sequelize.INTEGER,
+        },
     },
         { timestamps: false }
     );
