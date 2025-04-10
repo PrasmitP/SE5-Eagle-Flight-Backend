@@ -24,8 +24,9 @@ exports.create = (req, res) => {
 };
 
 // Retrieve all Redeemables
-exports.findAll = (req, res) => {
-  Redeemable.findAll()
+exports.getAll = (req, res) => {
+  // Use findAll() to fetch all Redeemables from the database
+  Redeemable.findAll()  // Corrected method call
     .then(data => res.send(data))
     .catch(err =>
       res.status(500).send({ message: err.message || "Error retrieving Redeemables." })
@@ -33,10 +34,10 @@ exports.findAll = (req, res) => {
 };
 
 // Retrieve a single Redeemable by id
-exports.findOne = (req, res) => {
+exports.getOne = (req, res) => {
   const id = req.params.id;
 
-  Redeemable.findByPk(id)
+  Redeemable.findByPk(id)  // Corrected method call
     .then(data => {
       if (data) res.send(data);
       else res.status(404).send({ message: `Redeemable not found with id=${id}` });

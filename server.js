@@ -72,7 +72,6 @@ require("./app/routes/eagle-flight/auth.routes.js")(app);
 
 require("./app/routes/eagle-flight/redeemable.routes.js")(app);
 require("./app/routes/eagle-flight/studentRedeemable.routes.js")(app);
-require("./app/routes/eagle-flight/pointShop.routes.js")(app);
 
 require("./app/routes/eagle-flight/major.routes.js")(app);
 require("./app/routes/eagle-flight/plan.routes.js")(app);

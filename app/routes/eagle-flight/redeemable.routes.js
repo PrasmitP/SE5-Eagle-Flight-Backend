@@ -7,10 +7,10 @@ module.exports = (app) => {
     router.post("/", redeemables.create);
   
     // Retrieve all Redeemables
-    router.get("/", redeemables.findAll);
+    router.get("/", redeemables.getAll);
   
     // Retrieve a single Redeemable by id
-    router.get("/:id", redeemables.findOne);
+    router.get("/:id", redeemables.getOne);
   
     // Update a Redeemable with id
     router.put("/:id", redeemables.update);

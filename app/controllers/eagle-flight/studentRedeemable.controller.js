@@ -1,5 +1,5 @@
 const db = require("../../models");
-const StudentRedeemable = db.studentRedeemable;
+const StudentRedeemables = db.studentRedeemable;
 const Student = db.student;
 const Redeemable = db.redeemable;
 
@@ -31,7 +31,7 @@ exports.create = async (req, res) => {
     student.points -= redeemable.points;
     await student.save();
 
-    const studentRedeemable = await StudentRedeemable.create({
+    const studentRedeemable = await StudentRedeemables.create({
       studentUserId,
       redeemableId,
       redeemDate: new Date(),
