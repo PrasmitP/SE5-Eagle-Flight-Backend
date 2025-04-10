@@ -5,21 +5,23 @@ const Op = db.Sequelize.Op;
 // Create and Save a new GeneralSemester
 exports.create = (req, res) => {
     // Validate request
-    if (!req.body.name || !req.body.description) {
+    if (!req.body.season || !req.body.year) {
         res.status(400).send({
-            message: "GeneralSemester needs a name and description!",
+            message: "GeneralSemester needs a season and a year!",
         });
         return;
     }
     // Create a GeneralSemester
     const generalSemester = {
-        name: req.body.name,
-        description: req.body.description,
-        points: req.body.points
+        startDate: req.body.startDate,
+        endDate: req.body.endDate,
+        season: req.body.season,
+        year: req.body.year,
     };
 
-    console.log("Creating generalSemester " + generalSemester.name);
+    console.log("Creating generalSemester " + generalSemester.season + " " + generalSemester.year);
     // Trying to save GeneralSemester in the database
+    // Would be nice ot check if it already exists. Dont have time to do that now, though.
     GeneralSemester.create(generalSemester).then((data) => {
         res.send(data);
     }).catch((err) => {

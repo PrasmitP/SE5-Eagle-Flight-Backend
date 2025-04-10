@@ -98,7 +98,6 @@ db.student.belongsTo(
 )
 
 // Associations for Flight Plan
-// sequelize.sync({ alter: true }) // Safely updates tables without deleting data NOT SURE ABOUT THIS ONE
 
 db.major.hasOne(db.plan);
 db.plan.belongsToMany(db.task, { through: db.taskInSemester });
@@ -106,17 +105,33 @@ db.task.belongsToMany(db.plan, { through: db.taskInSemester });
 
 
 // Assosiations for Flight Plan Instance
+
 db.student.hasOne(db.planInstance);
 db.planInstance.belongsTo(db.student);
 
-db.planInstance.hasMany(db.instanceTask);
+db.plan.hasMany(db.planInstance);
 db.planInstance.belongsTo(db.plan);
 
-db.generalSemester.hasMany(db.instanceTask);
-db.instanceTask.belongsTo(db.generalSemester);
+// Many-to-Many through instanceTask
+// This is because we do want to have duplicate rows, with different semesterUntilGraduation. Tasks can be postponed!
+db.planInstance.hasMany(db.instanceTask, {
+  foreignKey: 'planInstanceStudentUserId'
+});
+db.instanceTask.belongsTo(db.planInstance, {
+  foreignKey: 'planInstanceStudentUserId'
+});
 
-db.task.hasMany(db.instanceTask);
-db.instanceTask.belongsTo(db.task);
+// A Task has many InstanceTasks
+db.task.hasMany(db.instanceTask, {
+  foreignKey: 'taskId'
+});
+db.instanceTask.belongsTo(db.task, {
+  foreignKey: 'taskId'
+});
+
+// General semester associations
+// db.generalSemester.hasMany(db.instanceTask);
+// db.instanceTask.belongsTo(db.generalSemester);
 
 //Assosiations for redeemable 
 
