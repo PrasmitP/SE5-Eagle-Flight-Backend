@@ -19,6 +19,7 @@ exports.create = (req, res) => {
     id: req.body.id,
     experienceID: req.body.experienceID,
     date: req.body.date,
+    time: req.body.time,
     type: req.body.type,
     location: req.body.location,
     name: req.body.name,
