@@ -99,7 +99,8 @@ db.student.belongsTo(
 
 // Associations for Flight Plan
 
-db.major.hasOne(db.plan);
+db.plan.hasMany(db.major);
+db.major.belongsTo(db.plan);
 db.plan.belongsToMany(db.task, { through: db.taskInSemester });
 db.task.belongsToMany(db.plan, { through: db.taskInSemester });
 

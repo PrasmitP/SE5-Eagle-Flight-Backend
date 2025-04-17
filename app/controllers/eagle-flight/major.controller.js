@@ -13,7 +13,8 @@ exports.create = async (req, res) => {
     }
     // Create a Major
     const major = {
-        name: req.body.name
+        name: req.body.name,
+        planId: req.body.planId,
     };
 
     console.log("Creating major " + major.name);

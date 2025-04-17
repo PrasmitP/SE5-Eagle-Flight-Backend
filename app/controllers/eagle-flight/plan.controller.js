@@ -6,15 +6,15 @@ const Op = db.Sequelize.Op;
 // Create and Save a new Plan
 exports.create = (req, res) => {
     // Validate request
-    if (!req.body.majorId) {
+    if (!req.body.title) {
         res.status(400).send({
-            message: "Plan needs a majorId!",
+            message: "Plan needs a title!",
         });
         return;
     }
     // Create a Plan
     const plan = {
-        majorId: req.body.majorId
+        title: req.body.title
     };
 
     console.log("Creating plan ");
@@ -86,8 +86,8 @@ exports.findForMajorId = (req, res) => {
 }
 
 exports.addTask = (req, res) => {
-    const id = req.params.id;
-    console.log("Adding task to plan with id: " + id);
+    const id = req.params.planId;
+    console.log("Adding task to plan with planId: " + id);
     if (req.body.taskId == null || req.body.semesterUntilGraduation == null) {
         res.status(400).send({
             message: "TaskId and semesterUntilGraduation are required!"
@@ -230,4 +230,26 @@ exports.delete = (req, res) => {
             });
         });
 };
+
+exports.deleteAllTasksForPlanId = (req, res) => {
+    const planId = req.params.planId;
+    console.log("Deleting all tasks for plan with id: " + planId);
+    TaskInSemester.destroy({ where: { planId: planId } })
+        .then((num) => {
+            if (num > 0) {
+                res.status(200).send({
+                    message: "Tasks were deleted successfully!",
+                });
+            } else {
+                res.status(404).send({
+                    message: `Cannot delete tasks for Plan with id=${planId}.`,
+                });
+            }
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: err.message || "Could not delete tasks for Plan with id=" + planId,
+            });
+        });
+}
 
