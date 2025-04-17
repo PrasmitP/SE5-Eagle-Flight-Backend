@@ -1,3 +1,4 @@
+const { DataTypes } = require("sequelize");
 const dbConfig = require("../config/db.config.js");
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
@@ -35,6 +36,13 @@ db.planInstance = require("./eagle-flight/planInstance.model.js")(sequelize, Seq
 db.instanceTask = require("./eagle-flight/instanceTask.model.js")(sequelize, Sequelize);
 db.generalSemester = require("./eagle-flight/generalSemester.model.js")(sequelize, Sequelize);
 
+db.badge = require('./eagle-flight/badge.model.js')(sequelize, Sequelize);
+//db.studentBadge = require('./eagle-flight/studentBadge.model.js')(sequelize, Sequelize);
+
+db.redeemable = require('./eagle-flight/redeemable.model.js')(sequelize, Sequelize);
+//db.studentRedeemable = require('./eagle-flight/studentRedeemable.model.js')(sequelize, Sequelize);
+
+db.event = require("./eagle-flight/event.model.js")(sequelize, Sequelize);
 
 // db.user = require("./resume-builder/user.model.js")(sequelize, Sequelize);
 // db.session = require("./resume-builder/session.model.js")(sequelize, Sequelize);
@@ -96,6 +104,43 @@ db.student.belongsTo(
   { as: "strength" },
   { foreignKey: { allowNull: false }, onDelete: "SET NULL" }
 )
+db.badge.belongsToMany(
+  db.student,
+  { 
+    through: "studentBadges",
+    foreignKey: 'badgeId',
+    otherKey: 'studentId',
+    onDelete: "CASCADE"
+  }
+)
+db.redeemable.belongsToMany(
+  db.student,
+  { 
+    through: "studentRedeemables",
+    foreignKey: "redeemableId",
+    otherKey: "studentId",
+    onDelete: "CASCADE"
+  }
+)
+
+// Associations for Events
+db.event.belongsToMany(
+  db.student,
+    {
+      as: "student",
+      through: "studentEvent",
+      foreignKey: { allowNull: false },
+      onDelete: "CASCADE"
+    }
+)
+db.student.belongsToMany(
+  db.event, {
+    as: "event",
+    through: "studentEvent",
+    foreignKey: { allowNull: false },
+    onDelete: "CASCADE"
+  }
+)
 
 // Associations for Flight Plan
 
@@ -145,7 +190,12 @@ db.studentRedeemable.belongsTo(
   db.student,
   { as: "student" },
   { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-);
+)
+
+// db.generalSemester.hasMany(
+//   db.semester,
+//   { as: "semester" },
+// );
 
 // A Redeemable item can be redeemed many times
 db.redeemable.hasMany(
@@ -158,7 +208,4 @@ db.studentRedeemable.belongsTo(
   { as: "redeemable" },
   { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
 );
-
-
-
 module.exports = db;

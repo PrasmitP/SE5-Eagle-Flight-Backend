@@ -4,6 +4,7 @@ const Op = db.Sequelize.Op;
 
 // Create and Save a new Redeemable
 exports.create = (req, res) => {
+
   if (!req.body.name || !req.body.points) {
     return res.status(400).send({
       message: "Redeemable must have a name and point value.",
