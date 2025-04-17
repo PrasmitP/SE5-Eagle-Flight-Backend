@@ -71,6 +71,26 @@ exports.findOne = (req, res) => {
     });
 };
 
+// Find a single Student with an ocId
+exports.findOneForUserId = (req, res) => {
+  const userId = req.params.userId;
+  Student.findOne({ where: { userId: userId } })
+    .then((data) => {
+      if (data) {
+        res.status(200).send(data);
+      } else {
+        res.status(404).send({
+          message: `Cannot find Student with userId=${userId}.`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error retrieving User with userId=" + userId,
+      });
+    });
+};
+
 exports.findStudentsByName = (req, res) => {
   user.findStudentByName;
 };

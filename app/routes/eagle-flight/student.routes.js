@@ -12,6 +12,9 @@ module.exports = (app) => {
   // Retrieve a single Student with an ocId
   router.get("/:ocId", student.findOne);
 
+  // Retrieve a single Student with a userId
+  router.get("/userId/:userId", student.findOneForUserId);
+
   // Update a Student with ocId
   router.put("/:ocId", student.update);
 

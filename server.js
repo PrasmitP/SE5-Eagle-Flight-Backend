@@ -6,8 +6,44 @@ const cors = require("cors");
 const app = express();
 
 const db = require("./app/models");
+const Role = db.role;
+const Major = db.major;
 
-db.sequelize.sync();
+const seedRoles = async () => {
+  const defaultRoles = [
+    { id: 1, name: "student" },
+    { id: 2, name: "admin" },
+  ];
+
+  for (const role of defaultRoles) {
+    await Role.findOrCreate({
+      where: { id: role.id },
+      defaults: role,
+    });
+  }
+};
+
+const seedMajors = async () => {
+  const defaultMajors = [
+    { id: 1, name: "Computer Science" },
+    { id: 2, name: "Bible" },
+    { id: 3, name: "Math" },
+    { id: 4, name: "Electrical Engineering" }
+  ];
+
+  for (const major of defaultMajors) {
+    await Major.findOrCreate({
+      where: { id: major.id },
+      defaults: major,
+    });
+  }
+}
+
+
+db.sequelize.sync().then(() => {
+  seedRoles()
+  seedMajors()
+});
 
 var corsOptions = {
   origin: "http://localhost:3000",
@@ -36,6 +72,16 @@ require("./app/routes/eagle-flight/auth.routes.js")(app);
 require("./app/routes/eagle-flight/badge.route.js")(app);
 require("./app/routes/eagle-flight/redeemable.route.js")(app);
 require("./app/routes/eagle-flight/event.routes.js")(app);
+
+require("./app/routes/eagle-flight/redeemable.routes.js")(app);
+require("./app/routes/eagle-flight/studentRedeemable.routes.js")(app);
+
+require("./app/routes/eagle-flight/major.routes.js")(app);
+require("./app/routes/eagle-flight/plan.routes.js")(app);
+require("./app/routes/eagle-flight/generalSemester.routes.js")(app);
+require("./app/routes/eagle-flight/planInstance.routes.js")(app);
+require("./app/routes/eagle-flight/instanceTask.routes.js")(app);
+
 
 // Uncomment once we get back to the resume builder
 // require("./app/routes/resume-builder/auth.routes.js")(app);

@@ -10,9 +10,13 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       description: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
+      },
+      points: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-      }
+      },
     });
+  
     return Redeemable;
   };

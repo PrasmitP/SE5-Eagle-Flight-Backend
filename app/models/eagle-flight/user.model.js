@@ -16,12 +16,9 @@ module.exports = (sequelize, Sequelize) => {
     email: {
       type: Sequelize.STRING,
       allowNull: false,
-    },
-    isAdmin: {
-      type: Sequelize.BOOLEAN,
-      defaultValue: false,
-    },
-  });
+    }
+  }, { timestamps: false }
+  );
 
   return User;
 };

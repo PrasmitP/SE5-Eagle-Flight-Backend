@@ -4,130 +4,83 @@ const Op = db.Sequelize.Op;
 
 // Create and Save a new Redeemable
 exports.create = (req, res) => {
-  console.log("trying to create redeemable");
-  console.log(req.body);
 
-  // Validate request: Redeemable requires a name and description
-  if (!req.body.name || !req.body.description) {
+  if (!req.body.name || !req.body.points) {
     return res.status(400).send({
-      message: "Redeemable needs a name and description!",
+      message: "Redeemable must have a name and point value.",
     });
   }
 
-  // Create a Redeemable object
   const redeemable = {
     name: req.body.name,
-    description: req.body.description,
+    description: req.body.description || "",
+    points: req.body.points,
   };
 
-  // Save Redeemable in the database
   Redeemable.create(redeemable)
-    .then((data) => res.send(data))
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send({
-        message: "Some error occurred while creating the Redeemable.",
-      });
-    });
+    .then(data => res.status(201).send(data))
+    .catch(err =>
+      res.status(500).send({ message: err.message || "Error creating Redeemable." })
+    );
 };
 
-// Retrieve all Redeemables from the database.
-exports.findAll = (req, res) => {
-  const id = req.query.id;
-  const condition = id ? { id: { [Op.like]: `%${id}%` } } : null;
-
-  Redeemable.findAll({ where: condition })
-    .then((data) => res.send(data))
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving redeemables.",
-      });
-    });
+// Retrieve all Redeemables
+exports.getAll = (req, res) => {
+  // Use findAll() to fetch all Redeemables from the database
+  Redeemable.findAll()  // Corrected method call
+    .then(data => res.send(data))
+    .catch(err =>
+      res.status(500).send({ message: err.message || "Error retrieving Redeemables." })
+    );
 };
 
-// Find a single Redeemable with an id
-exports.findOne = (req, res) => {
+// Retrieve a single Redeemable by id
+exports.getOne = (req, res) => {
   const id = req.params.id;
 
-  Redeemable.findByPk(id)
-    .then((data) => {
-      if (data) {
-        res.send(data);
-      } else {
-        res.status(404).send({
-          message: `Cannot find Redeemable with id=${id}.`,
-        });
-      }
+  Redeemable.findByPk(id)  // Corrected method call
+    .then(data => {
+      if (data) res.send(data);
+      else res.status(404).send({ message: `Redeemable not found with id=${id}` });
     })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Error retrieving Redeemable with id=" + id,
-      });
-    });
+    .catch(err =>
+      res.status(500).send({ message: "Error retrieving Redeemable with id=" + id })
+    );
 };
 
-// Update a Redeemable by the id in the request
+// Update a Redeemable by the id
 exports.update = (req, res) => {
   const id = req.params.id;
 
-  Redeemable.update(req.body, {
-    where: { id: id },
-  })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: "Redeemable was updated successfully.",
-        });
-      } else {
-        res.send({
-          message: `Cannot update Redeemable with id=${id}. Maybe Redeemable was not found or req.body is empty!`,
-        });
-      }
+  Redeemable.update(req.body, { where: { id: id } })
+    .then(num => {
+      if (num == 1) res.send({ message: "Redeemable updated successfully." });
+      else res.send({ message: `Cannot update Redeemable with id=${id}` });
     })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Error updating Redeemable with id=" + id,
-      });
-    });
+    .catch(err =>
+      res.status(500).send({ message: "Error updating Redeemable with id=" + id })
+    );
 };
 
-// Delete a Redeemable with the specified id in the request
+// Delete a Redeemable by id
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  Redeemable.destroy({
-    where: { id: id },
-  })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: "Redeemable was deleted successfully!",
-        });
-      } else {
-        res.send({
-          message: `Cannot delete Redeemable with id=${id}. Maybe Redeemable was not found!`,
-        });
-      }
+  Redeemable.destroy({ where: { id: id } })
+    .then(num => {
+      if (num == 1) res.send({ message: "Redeemable deleted successfully!" });
+      else res.send({ message: `Cannot delete Redeemable with id=${id}` });
     })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Could not delete Redeemable with id=" + id,
-      });
-    });
+    .catch(err =>
+      res.status(500).send({ message: "Could not delete Redeemable with id=" + id })
+    );
 };
 
-// Delete all Redeemables from the database.
+// Delete all Redeemables
 exports.deleteAll = (req, res) => {
-  Redeemable.destroy({
-    where: {},
-    truncate: false,
-  })
-    .then((nums) => {
-      res.send({ message: `${nums} Redeemables were deleted successfully!` });
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while removing all redeemables.",
-      });
-    });
+  Redeemable.destroy({ where: {}, truncate: false })
+    .then(nums => res.send({ message: `${nums} Redeemables deleted successfully!` }))
+    .catch(err =>
+      res.status(500).send({ message: err.message || "Error deleting all Redeemables." })
+    );
 };
