@@ -106,7 +106,7 @@ db.student.belongsTo(
 )
 db.badge.belongsToMany(
   db.student,
-  { 
+  {
     through: "studentBadges",
     foreignKey: 'badgeId',
     otherKey: 'studentId',
@@ -115,7 +115,7 @@ db.badge.belongsToMany(
 )
 db.redeemable.belongsToMany(
   db.student,
-  { 
+  {
     through: "studentRedeemables",
     foreignKey: "redeemableId",
     otherKey: "studentId",
@@ -126,20 +126,20 @@ db.redeemable.belongsToMany(
 // Associations for Events
 db.event.belongsToMany(
   db.student,
-    {
-      as: "student",
-      through: "studentEvent",
-      foreignKey: { allowNull: false },
-      onDelete: "CASCADE"
-    }
-)
-db.student.belongsToMany(
-  db.event, {
-    as: "event",
+  {
+    as: "student",
     through: "studentEvent",
     foreignKey: { allowNull: false },
     onDelete: "CASCADE"
   }
+)
+db.student.belongsToMany(
+  db.event, {
+  as: "event",
+  through: "studentEvent",
+  foreignKey: { allowNull: false },
+  onDelete: "CASCADE"
+}
 )
 
 // Associations for Flight Plan
@@ -169,11 +169,15 @@ db.instanceTask.belongsTo(db.planInstance, {
 
 // A Task has many InstanceTasks
 db.task.hasMany(db.instanceTask, {
-  foreignKey: 'taskId'
+  foreignKey: 'taskId',
+  onDelete: 'CASCADE',
 });
+
 db.instanceTask.belongsTo(db.task, {
-  foreignKey: 'taskId'
+  foreignKey: 'taskId',
+  onDelete: 'CASCADE',
 });
+
 
 // General semester associations
 // db.generalSemester.hasMany(db.instanceTask);
