@@ -9,8 +9,11 @@ module.exports = (app) => {
     // Retrieve a single PlanInstance with a userId
     router.get("/:userId", planInstance.findOne);
 
+    // Add a task to a PlanInstance with userId
+    router.post("/:userId/addTask", planInstance.addTask);
+
     // Delete a PlanInstance with id
     router.delete("/:id", planInstance.delete);
 
-    app.use("/planInstance", router);
+    app.use("/plan-instance", router);
 };
