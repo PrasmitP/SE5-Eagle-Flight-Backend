@@ -23,7 +23,8 @@ exports.create = (req, res) => {
     graduationYear: req.body.graduationYear,
     graduationSemester: req.body.graduationSemester,
     ocId: req.body.ocId,
-    points: 0
+    points: 0,
+    majorId: req.body.majorId,
   };
 
   // Trying to save User in the database
