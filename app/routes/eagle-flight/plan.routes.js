@@ -33,5 +33,13 @@ module.exports = (app) => {
     // Delete all tasks in a plan
     router.delete("/:planId/tasks", plan.deleteAllTasksForPlanId);
 
+    //================
+
+    // Create an InstancePlan
+    router.post("/plan-instance/start/:userId", plan.startInstancePlan);
+
+    // Populate an InstancePlan
+    router.post("/plan-instance/populate/:userId", plan.populateInstancePlan);
+
     app.use("/plan", router);
 };

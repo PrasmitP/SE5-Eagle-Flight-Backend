@@ -1,5 +1,10 @@
 const db = require("../../models");
 const Plan = db.plan;
+const Student = db.student;
+const PlanInstance = db.planInstance;
+const instanceTask = db.instanceTask;
+const Task = db.task;
+const Major = db.major;
 const TaskInSemester = db.taskInSemester;
 const Op = db.Sequelize.Op;
 
@@ -67,7 +72,7 @@ exports.findOne = (req, res) => {
 exports.findForMajorId = (req, res) => {
     console.log("Finding plan with maJorId: " + req.params.majorId);
     const majorId = req.params.majorId;
-    Plan.findOne({ where: { majorId: majorId }, include: ["tasks"] })
+    Major.findOne({ where: { id: majorId }, include: ["plan"] })
         .then((data) => {
             if (data) {
                 res.send(data);
@@ -253,3 +258,85 @@ exports.deleteAllTasksForPlanId = (req, res) => {
         });
 }
 
+exports.startInstancePlan = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+
+        const student = await Student.findOne({
+            where: { userId: userId },
+        });
+
+        if (!student) {
+            return res.status(404).send({ message: "Student not found." });
+        }
+
+        const major = await Major.findOne({
+            where: { id: student.majorId },
+        });
+
+        if (!major) {
+            return res.status(404).send({ message: "Major not found." });
+        }
+
+        const planId = major.planId;
+
+        const instance = await PlanInstance.create({
+            studentUserId: userId,
+            planId: planId,
+        });
+
+        return res.status(201).send(instance);
+
+    } catch (err) {
+        return res.status(500).send({
+            message: err.message || "Some error occurred while creating the InstancePlan.",
+        });
+    }
+};
+
+exports.populateInstancePlan = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+
+        const planInstance = await PlanInstance.findOne({
+            where: { studentUserId: userId },
+            attributes: ['studentUserId'],
+            include: {
+                model: Plan,
+                attributes: ['id'],
+                include: {
+                    model: Task,
+                    attributes: ['id'],
+                    through: {
+                        attributes: ['semesterUntilGraduation'],
+                    },
+                },
+            },
+        });
+
+        if (!planInstance) {
+            return res.status(404).send({ message: "Plan instance not found." });
+        }
+
+        const transformed = planInstance.plan.tasks.map(task => ({
+            taskId: task.id,
+            semesterUntilGraduation: task.taskInSemester.semesterUntilGraduation
+        }));
+
+        for (pair of transformed) {
+            await instanceTask.create({
+                planInstanceStudentUserId: userId,
+                taskId: pair.taskId,
+                semesterUntilGraduation: pair.semesterUntilGraduation,
+                isPostponed: false,
+            });
+        }
+
+        return res.status(200).send(transformed);
+
+    } catch (err) {
+        return res.status(500).send({
+            message: err.message || "Some error occurred while retrieving the InstancePlan.",
+        });
+    }
+};
