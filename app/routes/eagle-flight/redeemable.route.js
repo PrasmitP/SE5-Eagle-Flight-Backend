@@ -9,11 +9,11 @@ module.exports = (app) => {
   
     // Retrieve all redeemables
     // router.get("/", [authenticate], redeemable.findAll);
-    router.get("/", redeemable.findAll);
+    router.get("/", redeemable.getAll);
   
     // Retrieve a single redeemable with id
     // router.get("/:id", [authenticate], redeemable.findOne);
-    router.get("/:id", redeemable.findOne);
+    router.get("/:id", redeemable.getOne);
 
     // Update a redeemable with id
     // router.put("/:id", [authenticate], redeemable.update);

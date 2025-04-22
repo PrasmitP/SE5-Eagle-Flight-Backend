@@ -5,10 +5,10 @@ module.exports = (sequelize, Sequelize) => {
             autoIncrement: true,
             primaryKey: true,
         },
-        experienceID: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
-        },
+        // experienceID: {
+        //     type: Sequelize.INTEGER,
+        //     allowNull: false,
+        // },
         location: {
             type: Sequelize.STRING,
             allowNull: false,

@@ -26,6 +26,9 @@ module.exports = (app) => {
     // Delete all events
     // router.delete("/", [authenticate], event.deleteAll);
     router.delete("/", event.deleteAll);
+
+    // Get students for event
+    router.get("/:id/students", controller.getStudentsForEvent);
     
     app.use("/event", router);
   };
