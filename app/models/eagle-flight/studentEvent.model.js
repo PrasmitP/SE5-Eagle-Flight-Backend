@@ -5,6 +5,10 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
         primaryKey: true
       },
+      studentOCID: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       eventID: {
         type: Sequelize.INTEGER,
         allowNull: false,

@@ -137,31 +137,3 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
-
-// Get students for event
-// Expected endpoint: GET /event/:eventId/students
-exports.getStudentsForEvent = async (req, res) => {
-  const eventId = req.params.eventId;
-  try {
-    const students = await db.student.findAll({
-      include: [
-        {
-          model: db.event,
-          as: 'event',
-          where: { id: eventId },
-          through: {
-            attributes: ['status', 'reflection']
-          }
-        },
-        {
-          model: db.user, // for fName/lName
-          as: 'user',
-          attributes: ['fName', 'lName']
-        }
-      ]
-    })
-    res.send(students)
-  } catch (err) {
-    res.status(500).send({ message: err.message || 'Server error' })
-  }
-}
