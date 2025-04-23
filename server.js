@@ -1,5 +1,8 @@
 require("dotenv").config();
 
+const path = require('path');
+
+
 const express = require("express");
 const cors = require("cors");
 
@@ -52,6 +55,8 @@ var corsOptions = {
 app.use(cors(corsOptions));
 app.options("*", cors());
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // parse requests of content-type - application/json
 app.use(express.json());
 
@@ -81,6 +86,7 @@ require("./app/routes/eagle-flight/plan.routes.js")(app);
 require("./app/routes/eagle-flight/generalSemester.routes.js")(app);
 require("./app/routes/eagle-flight/planInstance.routes.js")(app);
 require("./app/routes/eagle-flight/instanceTask.routes.js")(app);
+require("./app/routes/eagle-flight/submission.routes.js")(app);
 
 
 // Uncomment once we get back to the resume builder

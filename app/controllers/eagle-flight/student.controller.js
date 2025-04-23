@@ -119,3 +119,39 @@ exports.update = (req, res) => {
       });
     });
 };
+
+// Add points to a Student by the userId in the request
+exports.updatePoints = async (req, res) => {
+  const userId = req.params.userId;
+  const points = parseInt(req.body.points, 10);
+
+  if (isNaN(points)) {
+    return res.status(400).send({
+      message: "Points must be a valid integer.",
+    });
+  }
+
+  try {
+    const student = await Student.findOne({ where: { userId } });
+
+    if (!student) {
+      return res.status(404).send({
+        message: "Student not found.",
+      });
+    }
+
+    const newPoints = student.points + points;
+
+    await student.update({ points: newPoints });
+
+    res.send({
+      message: "Student points updated successfully.",
+      points: newPoints,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({
+      message: "Error updating student points.",
+    });
+  }
+};

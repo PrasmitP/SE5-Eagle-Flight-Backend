@@ -34,7 +34,7 @@ exports.findAll = (req, res) => {
 
     InstanceTask.findAll({
         where: { planInstanceStudentUserId: userId },
-        include: ["task"] 
+        include: ["task", "submissions"]
     })
         .then((data) => {
             res.send(data);
@@ -43,6 +43,32 @@ exports.findAll = (req, res) => {
             res.status(500).send({
                 message:
                     err.message || "Some error occurred while retrieving instanceTasks.",
+            });
+        });
+};
+
+// Update a InstanceTask by the id in the request
+exports.update = (req, res) => {
+    const id = req.params.id;
+    console.log("Updating instanceTask with id: " + id);
+
+    InstanceTask.update(req.body, {
+        where: { id: id },
+    })
+        .then((num) => {
+            if (num == 1) {
+                res.send({
+                    message: "InstanceTask was updated successfully.",
+                });
+            } else {
+                res.send({
+                    message: `Cannot update InstanceTask with id=${id}.`,
+                });
+            }
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: err.message || "Error updating InstanceTask with id=" + id,
             });
         });
 };

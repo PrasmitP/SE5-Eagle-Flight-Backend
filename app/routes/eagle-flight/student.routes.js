@@ -18,6 +18,9 @@ module.exports = (app) => {
   // Update a Student with ocId
   router.put("/:ocId", student.update);
 
+  // Give points to a Student with id
+  router.put("/points/:userId", student.updatePoints);
+
   // retrieve all Students with a certain fName and lName
   router.get("/name/:name", student.findStudentsByName);
 
