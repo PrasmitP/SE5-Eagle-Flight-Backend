@@ -34,6 +34,7 @@ db.studentRedeemable = require("./eagle-flight/studentRedeemable.model.js")(sequ
 
 db.planInstance = require("./eagle-flight/planInstance.model.js")(sequelize, Sequelize);
 db.instanceTask = require("./eagle-flight/instanceTask.model.js")(sequelize, Sequelize);
+db.submission = require("./eagle-flight/submission.model.js")(sequelize, Sequelize);
 db.generalSemester = require("./eagle-flight/generalSemester.model.js")(sequelize, Sequelize);
 
 db.badge = require('./eagle-flight/badge.model.js')(sequelize, Sequelize);
@@ -178,6 +179,16 @@ db.instanceTask.belongsTo(db.task, {
   onDelete: 'CASCADE',
 });
 
+// An instanceTask has many submissions
+db.instanceTask.hasMany(db.submission, {
+  foreignKey: 'instanceTaskId',
+  onDelete: 'CASCADE',
+});
+
+// A submission belongs to one instanceTask
+db.submission.belongsTo(db.instanceTask, {
+  foreignKey: 'instanceTaskId',
+});
 
 // General semester associations
 // db.generalSemester.hasMany(db.instanceTask);
