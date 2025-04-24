@@ -21,13 +21,24 @@ exports.create = async (req, res) => {
       return res.status(404).send({ message: "Student or Redeemable not found." });
     }
 
+    // Check for existing redemption
+    const alreadyRedeemed = await StudentRedeemables.findOne({
+      where: { studentUserId, redeemableId }
+    });
+
+    if (alreadyRedeemed) {
+      return res.status(400).send({
+        message: "You have already redeemed this item.",
+      });
+    }
+
     if (student.points < redeemable.points) {
       return res.status(400).send({
         message: "Student does not have enough points to redeem this item.",
       });
     }
 
-    // Deduct points and save redemption
+    // Deduct points and create redemption request (pending approval)
     student.points -= redeemable.points;
     await student.save();
 
@@ -35,9 +46,13 @@ exports.create = async (req, res) => {
       studentUserId,
       redeemableId,
       redeemDate: new Date(),
+      isApproved: false
     });
 
-    res.status(201).send(studentRedeemable);
+    res.status(201).send({
+      message: "Redemption request submitted. Awaiting admin approval.",
+      studentRedeemable,
+    });
   } catch (err) {
     res.status(500).send({
       message: err.message || "Error redeeming the item.",
