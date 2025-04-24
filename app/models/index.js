@@ -34,6 +34,7 @@ db.studentRedeemable = require("./eagle-flight/studentRedeemable.model.js")(sequ
 
 db.planInstance = require("./eagle-flight/planInstance.model.js")(sequelize, Sequelize);
 db.instanceTask = require("./eagle-flight/instanceTask.model.js")(sequelize, Sequelize);
+db.submission = require("./eagle-flight/submission.model.js")(sequelize, Sequelize);
 db.generalSemester = require("./eagle-flight/generalSemester.model.js")(sequelize, Sequelize);
 
 db.badge = require('./eagle-flight/badge.model.js')(sequelize, Sequelize);
@@ -107,7 +108,7 @@ db.student.belongsTo(
 )
 db.badge.belongsToMany(
   db.student,
-  { 
+  {
     through: "studentBadges",
     foreignKey: 'badgeId',
     otherKey: 'studentId',
@@ -116,7 +117,7 @@ db.badge.belongsToMany(
 )
 db.redeemable.belongsToMany(
   db.student,
-  { 
+  {
     through: "studentRedeemables",
     foreignKey: "redeemableId",
     otherKey: "studentId",
@@ -144,10 +145,19 @@ db.student.belongsToMany(
     onDelete: "CASCADE"
   }
 )
+// db.student.belongsToMany(
+//   db.event, {
+//   as: "event",
+//   through: "studentEvent",
+//   foreignKey: { allowNull: false },
+//   onDelete: "CASCADE"
+// }
+// )
 
 // Associations for Flight Plan
 
-db.major.hasOne(db.plan);
+db.plan.hasMany(db.major);
+db.major.belongsTo(db.plan);
 db.plan.belongsToMany(db.task, { through: db.taskInSemester });
 db.task.belongsToMany(db.plan, { through: db.taskInSemester });
 
@@ -171,10 +181,24 @@ db.instanceTask.belongsTo(db.planInstance, {
 
 // A Task has many InstanceTasks
 db.task.hasMany(db.instanceTask, {
-  foreignKey: 'taskId'
+  foreignKey: 'taskId',
+  onDelete: 'CASCADE',
 });
+
 db.instanceTask.belongsTo(db.task, {
-  foreignKey: 'taskId'
+  foreignKey: 'taskId',
+  onDelete: 'CASCADE',
+});
+
+// An instanceTask has many submissions
+db.instanceTask.hasMany(db.submission, {
+  foreignKey: 'instanceTaskId',
+  onDelete: 'CASCADE',
+});
+
+// A submission belongs to one instanceTask
+db.submission.belongsTo(db.instanceTask, {
+  foreignKey: 'instanceTaskId',
 });
 
 // General semester associations

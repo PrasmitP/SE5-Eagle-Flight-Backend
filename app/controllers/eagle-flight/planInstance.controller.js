@@ -61,7 +61,7 @@ exports.addTask = (req, res) => {
         return;
     }
 
-    PlanInstance.findOne({ where: { userId: userId } })
+    PlanInstance.findOne({ where: { studentUserId: userId } })
         .then((planInstance) => {
             if (!planInstance) {
                 res.status(404).send({
@@ -71,21 +71,27 @@ exports.addTask = (req, res) => {
             }
 
             const taskId = req.body.taskId;
-            // const semesterUntilGraduation = req.body.semesterUntilGraduation;
+            const semesterUntilGraduation = req.body.semesterUntilGraduation;
             // figure out the semester thing :v
             InstanceTask.create({
-                planId: id,
+                planInstanceStudentUserId: userId,
                 taskId: taskId,
-                semesterUntilGraduation: semesterUntilGraduation
+                semesterUntilGraduation: semesterUntilGraduation,
+                isPostponed: false,
             }).then((response) => {
                 res.send(response);
+            }).catch((err) => {
+                res.status(500).send({
+                    message:
+                        err.message || "Some error occurred while adding the task to the PlanInstance."
+                });
             })
         })
 
 };
 
 // Update a PlanInstance by the id in the request
-exports.update = (req, res) => {}
+exports.update = (req, res) => { }
 
 // Delete a PlanInstance with the specified userId in the request
 exports.delete = (req, res) => {

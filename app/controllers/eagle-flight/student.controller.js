@@ -23,7 +23,8 @@ exports.create = (req, res) => {
     graduationYear: req.body.graduationYear,
     graduationSemester: req.body.graduationSemester,
     ocId: req.body.ocId,
-    points: 0
+    points: 0,
+    majorId: req.body.majorId,
   };
 
   // Trying to save User in the database
@@ -117,4 +118,40 @@ exports.update = (req, res) => {
         message: "Error updating Student with ocId=" + ocId,
       });
     });
+};
+
+// Add points to a Student by the userId in the request
+exports.updatePoints = async (req, res) => {
+  const userId = req.params.userId;
+  const points = parseInt(req.body.points, 10);
+
+  if (isNaN(points)) {
+    return res.status(400).send({
+      message: "Points must be a valid integer.",
+    });
+  }
+
+  try {
+    const student = await Student.findOne({ where: { userId } });
+
+    if (!student) {
+      return res.status(404).send({
+        message: "Student not found.",
+      });
+    }
+
+    const newPoints = student.points + points;
+
+    await student.update({ points: newPoints });
+
+    res.send({
+      message: "Student points updated successfully.",
+      points: newPoints,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({
+      message: "Error updating student points.",
+    });
+  }
 };
