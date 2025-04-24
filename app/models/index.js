@@ -145,6 +145,21 @@ db.student.belongsToMany(
     onDelete: "CASCADE"
   }
 )
+
+db.task.hasMany(
+  db.event, {
+    as: "event",
+    foreignKey: 'taskId'
+  }
+)
+
+db.event.belongsTo(
+  db.task, {
+    as: "task",
+    foreignKey: 'taskId'
+  }
+)
+
 // db.student.belongsToMany(
 //   db.event, {
 //   as: "event",
