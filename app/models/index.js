@@ -44,6 +44,7 @@ db.redeemable = require('./eagle-flight/redeemable.model.js')(sequelize, Sequeli
 //db.studentRedeemable = require('./eagle-flight/studentRedeemable.model.js')(sequelize, Sequelize);
 
 db.event = require("./eagle-flight/event.model.js")(sequelize, Sequelize);
+db.studentEvent = require("./eagle-flight/studentEvent.model.js")(sequelize, Sequelize);
 
 // db.user = require("./resume-builder/user.model.js")(sequelize, Sequelize);
 // db.session = require("./resume-builder/session.model.js")(sequelize, Sequelize);
@@ -127,21 +128,31 @@ db.redeemable.belongsToMany(
 // Associations for Events
 db.event.belongsToMany(
   db.student,
-  {
-    as: "student",
-    through: "studentEvent",
-    foreignKey: { allowNull: false },
-    onDelete: "CASCADE"
-  }
+    {
+      as: "student",
+      through: db.studentEvent,
+      foreignKey: 'eventID',
+      otherKey: 'studentUserID',
+      onDelete: "CASCADE"
+    }
 )
 db.student.belongsToMany(
   db.event, {
-  as: "event",
-  through: "studentEvent",
-  foreignKey: { allowNull: false },
-  onDelete: "CASCADE"
-}
+    as: "event",
+    through: db.studentEvent,
+    foreignKey: 'studentUserID',
+    otherKey: 'eventID',
+    onDelete: "CASCADE"
+  }
 )
+// db.student.belongsToMany(
+//   db.event, {
+//   as: "event",
+//   through: "studentEvent",
+//   foreignKey: { allowNull: false },
+//   onDelete: "CASCADE"
+// }
+// )
 
 // Associations for Flight Plan
 
