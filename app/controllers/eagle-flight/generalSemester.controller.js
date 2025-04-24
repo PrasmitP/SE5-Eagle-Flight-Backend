@@ -1,5 +1,7 @@
 const db = require("../../models");
 const GeneralSemester = db.generalSemester;
+const Student = db.student;
+const InstanceTask = db.instanceTask;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new GeneralSemester
@@ -117,3 +119,114 @@ exports.delete = (req, res) => {
         });
 };
 
+// Helper function
+function calculateSemesterUntilGraduation(graduationYear, graduationSemester, currentYear, currentSemester) {
+
+    const semesterMap = { spring: 0, fall: 1 };
+
+    const gradIndex = graduationYear * 2 + semesterMap[graduationSemester];
+    const currentIndex = currentYear * 2 + semesterMap[currentSemester];
+
+    return gradIndex - currentIndex + 1;
+}
+
+exports.refreshStatus = async (req, res) => {
+    const currentDate = new Date();
+    let currentSemester;
+
+    try {
+        currentSemester = await GeneralSemester.findOne({
+            where: {
+                startDate: { [Op.lte]: currentDate },
+                endDate: { [Op.gte]: currentDate }
+            }
+        });
+
+        if (!currentSemester) {
+            return res.status(404).json({ message: "No active semester found for current date." });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Error finding current semester." });
+    }
+
+    try {
+        const students = await Student.findAll();
+        let totalRowsUpdated = 0;
+
+        for (const student of students) {
+            const semesterUntilGraduation = calculateSemesterUntilGraduation(
+                student.graduationYear,
+                student.graduationSemester,
+                currentSemester.year,
+                currentSemester.season
+            );
+
+            if (semesterUntilGraduation < 1 || semesterUntilGraduation >= 8) {
+                continue;
+            }
+            const tasksToPostpone = await InstanceTask.findAll({
+                where: {
+                    planInstanceStudentUserId: student.userId,
+                    isPostponed: false,
+                    completionDate: null,
+                    semesterUntilGraduation: { [Op.gt]: semesterUntilGraduation }
+                }
+            });
+
+            // Mark old tasks as postponed
+            await InstanceTask.update(
+                { isPostponed: true },
+                {
+                    where: {
+                        id: tasksToPostpone.map(t => t.id)
+                    }
+                }
+            );
+
+            // Create new tasks
+            const newTasks = tasksToPostpone.map(old => ({
+                taskId: old.taskId,
+                planInstanceStudentUserId: old.planInstanceStudentUserId,
+                semesterUntilGraduation: semesterUntilGraduation,
+                isPostponed: false,
+                completionDate: null,
+            }));
+
+            await InstanceTask.bulkCreate(newTasks);
+
+            totalRowsUpdated += tasksToPostpone.length;
+        }
+
+        res.status(200).json({
+            message: "Postponement refresh completed.",
+            totalRowsUpdated
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error processing instance tasks." });
+    }
+};
+
+exports.getCurrentSemester = async (req, res) => {
+    const currentDate = new Date();
+    let currentSemester;
+
+    try {
+        currentSemester = await GeneralSemester.findOne({
+            where: {
+                startDate: { [Op.lte]: currentDate },
+                endDate: { [Op.gte]: currentDate }
+            }
+        });
+
+        if (!currentSemester) {
+            return res.status(404).json({ message: "No active semester found for current date." });
+        }
+
+        res.status(200).json(currentSemester);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Error finding current semester." });
+    }
+};

@@ -10,13 +10,17 @@ module.exports = (app) => {
     router.get("/", generalSemester.findAll);
 
     // Retrieve a single GeneralSemester with id
-    router.get("/:id", generalSemester.findOne);
+    router.get("/semester/:id", generalSemester.findOne);
 
     // Update a GeneralSemester with id
     router.put("/:id", generalSemester.update);
 
     // Delete a GeneralSemester with id
     router.delete("/:id", generalSemester.delete);
+
+    router.get("/current", generalSemester.getCurrentSemester);
+
+    router.post("/refresh-status", generalSemester.refreshStatus);
 
     app.use("/generalSemester", router);
 };
