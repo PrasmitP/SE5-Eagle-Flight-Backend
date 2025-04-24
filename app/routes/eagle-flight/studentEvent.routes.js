@@ -7,9 +7,12 @@ module.exports = (app) => {
     // router.post("/", [authenticate], studentEvent.addStudentToEvent);
     router.post("/", studentEvent.addStudentToEvent);
 
+    router.get("/getAllStudentsWithNames", studentEvent.getAllStudentsWithNames);
+
     // Get all students for a specific event
-    // router.get("/:eventId", [authenticate], studentEvent.getStudentsForEvent);
+    // router.get("/:eventId", [authenticate], studentEvent.getStudentsForEvent);    
     router.get("/:eventId", studentEvent.getStudentsForEvent);
+
 
     // Update student's status (attending/not attending) for an event
     // router.put("/:eventId/:studentUserID", [authenticate], studentEvent.updateStudentStatus);

@@ -3,6 +3,39 @@ const StudentEvent = db.studentEvent;
 const Student = db.student;
 const User = db.user;
 
+exports.getAllStudentsWithNames = async (req, res) => {
+    try {
+        // 🔥 TEST: Add this line to debug
+        const test = await db.student.findAll();
+        console.log("TEST DATA:", test);
+
+        // Original code below:
+        const students = await db.student.findAll({
+            include: [
+                {
+                    model: db.user,
+                    as: "user",
+                    attributes: ["fName", "lName"]
+                }
+            ]
+        });
+
+        const result = students.map(s => ({
+            userId: s.userId,
+            ocId: s.ocId,
+            fName: s.user?.fName || "FirstName",
+            lName: s.user?.lName || "LastName"
+        }));
+
+        res.send(result);
+    } catch (err) {
+        console.error("Error fetching students with names:", err);
+        res.status(500).send({
+            message: err.message || "Error retrieving students with names."
+        });
+    }
+};
+
 exports.getStudentsForEvent = async (req, res) => {
     const eventId = req.params.eventId;
 
