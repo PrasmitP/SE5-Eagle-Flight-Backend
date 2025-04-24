@@ -1,12 +1,12 @@
 {
-  "name": "resume-builder",
+  "name": "flight-plan-backend",
   "version": "1.0.0",
   "description": "Tutorial Node.js with Rest API",
   "main": "server.js",
   "scripts": {
     "test": "jest --",
     "start": "node server.js",
-    "bundle": "mkdir deploy && cp -r app server.js package.json package-lock.json tutorial-backend.service .env deploy"
+    "bundle": "mkdir deploy && cp -r app server.js package.json package-lock.json flight-plan-t3-backend.service .env deploy"
   },
   "keywords": [
     "node.js",
