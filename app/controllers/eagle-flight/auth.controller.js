@@ -13,8 +13,6 @@ let googleUser = {};
 const google_id = process.env.CLIENT_ID;
 
 exports.login = async (req, res) => {
-  console.log(req.body);
-
   var googleToken = req.body.credential;
 
   const { OAuth2Client } = require("google-auth-library");
@@ -91,7 +89,7 @@ exports.login = async (req, res) => {
       .then((data) => {
         console.log("user was registered");
         user = data.dataValues;
-        // res.send({ message: "User was registered successfully!" });
+        res.send({ message: "User was registered successfully!" });
       })
       .catch((err) => {
         res.status(500).send({ message: err.message });
@@ -273,7 +271,7 @@ exports.authorize = async (req, res) => {
 };
 
 exports.logout = async (req, res) => {
-  console.log(req.body);
+  console.log("here"+req.body);
   if (req.body === null) {
     res.send({
       message: "User has already been successfully logged out!",
