@@ -11,7 +11,7 @@ exports.create = (req, res) => {
     return res.status(400).send({ message: "Badge needs a name and description!" });
   }
 
-  const imagePath = req.file ? `/uploads/badge-images/${req.file.filename}` : null;
+  const imagePath = req.file ? `${req.protocol}://${req.get('host')}/uploads/badge-images/${req.file.filename}` : null;
 
   const badge = {
     name: req.body.name,
@@ -62,7 +62,7 @@ exports.findOne = (req, res) => {
 exports.update = async (req, res) => {
   const id = req.params.id;
 
-  const imagePath = req.file ? `/uploads/badge-images/${req.file.filename}` : null;
+  const imagePath = req.file ? `${req.protocol}://${req.get('host')}/uploads/badge-images/${req.file.filename}` : null;
 
   try {
     const badge = await Badge.findByPk(id);
