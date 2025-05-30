@@ -38,7 +38,7 @@ db.submission = require("./eagle-flight/submission.model.js")(sequelize, Sequeli
 db.generalSemester = require("./eagle-flight/generalSemester.model.js")(sequelize, Sequelize);
 
 db.badge = require('./eagle-flight/badge.model.js')(sequelize, Sequelize);
-//db.studentBadge = require('./eagle-flight/studentBadge.model.js')(sequelize, Sequelize);
+db.studentBadge = require('./eagle-flight/studentBadge.model.js')(sequelize, Sequelize);
 
 db.redeemable = require('./eagle-flight/redeemable.model.js')(sequelize, Sequelize);
 //db.studentRedeemable = require('./eagle-flight/studentRedeemable.model.js')(sequelize, Sequelize);
@@ -109,10 +109,21 @@ db.student.belongsTo(
 db.badge.belongsToMany(
   db.student,
   {
-    through: "studentBadges",
+    as: 'student',
+    through: db.studentBadge,
     foreignKey: 'badgeId',
     otherKey: 'studentId',
     onDelete: "CASCADE"
+  }
+)
+db.student.belongsToMany(
+  db.badge,
+  {
+    as: 'badge',
+    through: db.studentBadge,
+    foreignKey: 'studentId',
+    otherKey: 'badgeId',
+    onDelete: 'CASCADE'
   }
 )
 db.redeemable.belongsToMany(

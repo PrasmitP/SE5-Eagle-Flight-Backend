@@ -5,11 +5,9 @@ const User = db.user;
 
 exports.getAllStudentsWithNames = async (req, res) => {
     try {
-        // 🔥 TEST: Add this line to debug
         const test = await db.student.findAll();
         console.log("TEST DATA:", test);
 
-        // Original code below:
         const students = await db.student.findAll({
             include: [
                 {
