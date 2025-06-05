@@ -33,7 +33,7 @@ exports.create = (req, res) => {
 // Find a single PlanInstance with a userId
 exports.findOne = (req, res) => {
     console.log("Finding planInstance with Userid: " + req.params.userId);
-    const userId = req.params.serId;
+    const userId = req.params.userId;
     PlanInstance.findByPk(userId)
         .then((data) => {
             if (data) {

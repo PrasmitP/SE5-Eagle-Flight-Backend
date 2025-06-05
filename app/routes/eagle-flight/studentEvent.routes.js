@@ -21,6 +21,9 @@ module.exports = (app) => {
     // Delete a student from an event
     // router.delete("/:eventId/:studentUserID", [authenticate], studentEvent.deleteStudentFromEvent);
     router.delete("/:eventId/:studentUserID", studentEvent.deleteStudentFromEvent);
+    // Delete a student (supporting fallback to studentOCID)
+    router.post("/delete", studentEvent.deleteStudentFromEvent);
+
 
     // Optional: Delete all student-event records (careful with this)
     // router.delete("/", [authenticate], studentEvent.deleteAllStudentEvents);

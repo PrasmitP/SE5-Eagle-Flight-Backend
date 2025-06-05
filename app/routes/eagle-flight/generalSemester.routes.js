@@ -3,6 +3,7 @@ module.exports = (app) => {
     const { authenticate } = require("../../authorization/authorization.js");
     var router = require("express").Router();
 
+    router.get("/current", generalSemester.getCurrentSemester);
     // Create a new GeneralSemester
     router.post("/", generalSemester.create);
 
@@ -18,7 +19,6 @@ module.exports = (app) => {
     // Delete a GeneralSemester with id
     router.delete("/:id", generalSemester.delete);
 
-    router.get("/current", generalSemester.getCurrentSemester);
 
     router.post("/refresh-status", generalSemester.refreshStatus);
 

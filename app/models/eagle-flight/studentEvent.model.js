@@ -1,9 +1,14 @@
 module.exports = (sequelize, Sequelize) => {
     const StudentEvent = sequelize.define("studentEvent", {
+      id: {
+        type:Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+      },
       studentUserID: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        primaryKey: true
+        allowNull: true,
+        //primaryKey: true
       },
       studentOCID: {
         type: Sequelize.INTEGER,
@@ -20,6 +25,14 @@ module.exports = (sequelize, Sequelize) => {
       },
       status: {
         type: Sequelize.INTEGER,
+        allowNull: true
+      },
+      fName: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      lName: {
+        type: Sequelize.STRING,
         allowNull: true
       }
     }, {

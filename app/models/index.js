@@ -157,6 +157,12 @@ db.student.belongsToMany(
   }
 )
 
+db.studentEvent.belongsTo(db.student, {
+  foreignKey: 'studentUserID',
+  targetKey: 'userId',
+  as: 'student'
+});
+
 db.task.hasMany(
   db.event, {
     as: "event",

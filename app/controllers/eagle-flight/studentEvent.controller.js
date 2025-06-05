@@ -5,9 +5,6 @@ const User = db.user;
 
 exports.getAllStudentsWithNames = async (req, res) => {
     try {
-        const test = await db.student.findAll();
-        console.log("TEST DATA:", test);
-
         const students = await db.student.findAll({
             include: [
                 {
@@ -38,31 +35,35 @@ exports.getStudentsForEvent = async (req, res) => {
     const eventId = req.params.eventId;
 
     try {
-        const students = await Student.findAll({
-        include: [
-            {
-                model: db.event,
-                as: "event",
-                where: { id: eventId },
-                through: {
-                    attributes: ["status", "reflection"]
+        const studentEvents = await StudentEvent.findAll({
+            where: { eventID: eventId },
+            include: [
+                {
+                    model: Student,
+                    as: "student",
+                    include: [
+                        {
+                            model: User,
+                            as: "user",
+                            attributes: ["fName", "lName"]
+                        }
+                    ]
                 }
-            },
-            {
-                model: User,
-                as: "user",
-                attributes: ["fName", "lName"]
-            }
-        ]
+            ]
         });
 
-        const result = students.map(s => ({
-            userId: s.userId,
-            ocId: s.ocId,
-            fName: s.user?.fName || "FirstName",
-            lName: s.user?.lName || "LastName",
-            status: s.event[0]?.studentEvent?.status ?? 0
-        }));
+        const result = studentEvents.map(entry => {
+            const student = entry.student || {};
+            const user = student.user || {};
+
+            return {
+                userId: student.userId ?? entry.studentUserID,
+                ocId: student.ocId ?? entry.studentOCID,
+                fName: user.fName || entry.fName || "FirstName",
+                lName: user.lName || entry.lName || "LastName",
+                status: entry.status ?? 0
+            };
+        });
 
         res.send(result);
     } catch (err) {
@@ -71,39 +72,50 @@ exports.getStudentsForEvent = async (req, res) => {
             message: err.message || "Error retrieving students for event."
         });
     }
-};  
+};
 
-exports.addStudentToEvent = (req, res) => {
-    console.log("Trying to add student to event");
-    console.log("Request body:", req.body);
+exports.addStudentToEvent = async (req, res) => {
+    const { studentUserID, studentOCID, eventID, status, fName, lName } = req.body;
 
-    const { studentUserID, studentOCID, eventID, status } = req.body;
-
-    if (!studentUserID || !eventID) {
+    if (!studentOCID || !eventID) {
         return res.status(400).send({
-            message: "Missing required studentUserID or eventID."
+            message: "Missing required studentOCID or eventID."
         });
     }
 
-    const newEntry = {
-        studentUserID,
-        studentOCID,
-        eventID,
-        status
-    };
-
-    console.log("Creating StudentEvent with status:", status);
-    StudentEvent.create(newEntry)
-        .then(data => {
-            console.log("Saved studentEvent record:", data);
-            res.status(201).send(data);
-        })
-        .catch(err => {
-            console.error("Error inserting studentEvent:", err);
-            res.status(500).send({
-                message: err.message || "Some error occurred while adding the student to the event."
-            });
+    try {
+        // Check if a studentEvent with same OCID and eventID already exists
+        const existing = await StudentEvent.findOne({
+            where: {
+                studentOCID: studentOCID,
+                eventID: eventID
+            }
         });
+
+        if (existing) {
+            return res.status(409).send({
+                message: `Student with OC ID ${studentOCID} is already added to this event.`
+            });
+        }
+
+        const newEntry = {
+            studentUserID: studentUserID || null,
+            studentOCID,
+            eventID,
+            status: status ?? 0,
+            fName: fName ?? null,
+            lName: lName ?? null
+        };
+
+        const data = await StudentEvent.create(newEntry);
+        res.status(201).send(data);
+
+    } catch (err) {
+        console.error("Error inserting studentEvent:", err);
+        res.status(500).send({
+            message: err.message || "Some error occurred while adding the student to the event."
+        });
+    }
 };
 
 exports.updateStudentStatus = async (req, res) => {
@@ -155,15 +167,22 @@ exports.updateStudentStatus = async (req, res) => {
 };
 
 exports.deleteStudentFromEvent = async (req, res) => {
-    const { eventId, studentUserID } = req.params;
+    const { eventId, studentUserID, studentOCID } = req.body;
+
+    const whereClause = {
+        eventID: eventId
+    };
+
+    if (studentUserID !== null && studentUserID !== undefined) {
+        whereClause.studentUserID = studentUserID;
+    } else if (studentOCID !== null && studentOCID !== undefined) {
+        whereClause.studentOCID = studentOCID;
+    } else {
+        return res.status(400).send({ message: "Missing studentUserID or studentOCID." });
+    }
 
     try {
-        const result = await StudentEvent.destroy({
-            where: {
-                eventID: eventId,
-                studentUserID: studentUserID
-            }
-        });
+        const result = await StudentEvent.destroy({ where: whereClause });
 
         if (result === 1) {
             res.send({ message: "Student was successfully removed from the event." });
